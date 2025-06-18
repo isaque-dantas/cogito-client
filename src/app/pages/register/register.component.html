@@ -1,0 +1,50 @@
+<main class="max-w-md mx-auto py-24">
+  <h1 class="text-secondary font-bold text-4xl text-center">Fazer cadastro</h1>
+  <form (ngSubmit)="onSubmit()" [formGroup]="form">
+
+    <div class="flex flex-col gap-4 mt-8">
+
+      <div class="flex flex-col">
+        <span class="font-light text-sm text-gray-600">Campo obrigatório*</span>
+        <input placeholder="Nome" type="text" formControlName="name" name="name" id="name">
+      </div>
+
+      <div class="flex flex-col">
+        <span class="font-light text-sm text-gray-600">Campo obrigatório*</span>
+        <input placeholder="CPF" type="text" formControlName="cpf" name="cpf" id="cpf">
+        @if (form.controls.cpf.dirty && form.controls.cpf.getError('invalidFormat')) {
+          <span class="font-regular text-sm text-red-800 mt-1">O CPF precisa estar em um formato válido.</span>
+        }
+      </div>
+
+      <div class="flex flex-col">
+        <span class="font-light text-sm text-gray-600">Campo obrigatório*</span>
+        <input placeholder="E-mail" type="email" formControlName="email" name="email" id="email">
+        @if (form.controls.email.dirty && form.controls.email.getError('email')) {
+          <span class="font-regular text-sm text-red-800 mt-1">O e-mail precisa estar em um formato válido.</span>
+        }
+      </div>
+
+      <div class="flex flex-col">
+        <span class="font-light text-sm text-gray-600">Campo obrigatório*</span>
+        <input placeholder="Senha" type="password" formControlName="password" name="password" id="password">
+      </div>
+    </div>
+
+    <p class="mt-6">
+      <a routerLink="/" class="text-tertiary underline underline-offset-2 text-sm">Voltar para o início</a>
+    </p>
+
+    <div class="mt-8 flex justify-center">
+      <button type="submit"
+              [disabled]="form.invalid"
+              [class]="
+              'border-2  rounded-lg px-4 py-1 transition-all font-semibold ' +
+              'border-secondary text-secondary hover:text-white hover:bg-secondary cursor-pointer ' +
+              'disabled:text-gray-400 disabled:bg-gray-50 disabled:border-gray-400 disabled:cursor-not-allowed'">
+        Confirmar
+      </button>
+    </div>
+
+  </form>
+</main>

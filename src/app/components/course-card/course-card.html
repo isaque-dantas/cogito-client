@@ -1,0 +1,11 @@
+<div class="p-4 border border-secondary rounded-lg flex flex-col gap-4 justify-between h-full">
+  <a [routerLink]="'/course/' + course.id" class="text-secondary text-2xl font-bold">{{course.title}}</a>
+  <div class="flex gap-2 items-center">
+    <span class="text-gray-500 text-sm">Coordenador(a)</span>
+    <span class="w-1 h-1 bg-gray-500 rounded-full"></span>
+    <a
+      class="underline underline-offset-2"
+      [routerLink]="'/coordinator/' + course.user_who_created.email"
+    >{{course.user_who_created.name}}</a>
+  </div>
+</div>

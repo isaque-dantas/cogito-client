@@ -4,17 +4,17 @@ import {RouterLink} from "@angular/router";
 import {AuthService} from '../../services/auth.service';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-login-page',
   standalone: true,
   imports: [
     FormsModule,
     ReactiveFormsModule,
     RouterLink
   ],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  templateUrl: './login-page.component.html',
+  styleUrl: './login-page.component.css'
 })
-export class LoginComponent {
+export class LoginPage {
   fb = inject(FormBuilder)
 
   form = this.fb.group({

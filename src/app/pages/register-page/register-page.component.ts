@@ -6,17 +6,17 @@ import {UserForm} from '../../interfaces/user';
 import {isCPF} from 'validation-br';
 
 @Component({
-  selector: 'app-register',
+  selector: 'app-register-page',
   standalone: true,
   imports: [
     RouterLink,
     FormsModule,
     ReactiveFormsModule
   ],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.css'
+  templateUrl: './register-page.component.html',
+  styleUrl: './register-page.component.css'
 })
-export class RegisterComponent {
+export class RegisterPage {
   fb = inject(FormBuilder)
 
   form = this.fb.group({

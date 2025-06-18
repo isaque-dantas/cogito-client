@@ -21,4 +21,34 @@ export class AuthService {
     localStorage.setItem("access", authToken.access);
     return authToken;
   }
+
+  isAuthenticated(): boolean {
+    return this.doesAccessTokenExist() && !this.isAccessTokenExpired()
+  }
+
+  isAccessTokenExpired(): boolean {
+    if (!this.doesAccessTokenExist()) return true
+
+    const token: string = localStorage.getItem('access')!
+    const encodedTokenPayload = token.split('.')[1]
+    const decodedTokenPayload = JSON.parse(atob(encodedTokenPayload))
+    const exp = decodedTokenPayload.exp
+
+    if (!exp) return true
+
+    const expirationDate = new Date(exp * 1000).getTime()
+    const currentDate = new Date().getTime()
+
+    return currentDate >= expirationDate
+  }
+
+  doesAccessTokenExist() {
+    return !!localStorage.getItem('access');
+  }
+
+  getToken(): string | null {
+    if (!this.isAuthenticated()) return null
+
+    return "Bearer " + localStorage.getItem('access');
+  }
 }

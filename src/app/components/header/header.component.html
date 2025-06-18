@@ -1,1 +1,38 @@
-<p>header works!</p>
+<header class="flex justify-between py-3 px-20 drop-shadow-md bg-white">
+  <figure>
+    <img ngSrc="/cogito-logo-gradient.png" alt="" width="134" height="54" priority>
+  </figure>
+  @if (!isUserLogged) {
+
+    <nav class="flex gap-12 items-center">
+      <ul class="flex gap-6 items-center">
+        <li class="font-bold text-secondary cursor-pointer hover:underline underline-offset-2">Início</li>
+        <li class="flex gap-2 items-center border border-tertiary rounded-sm px-2 py-1">
+          <input type="text" placeholder="Pesquisar cursos" class="placeholder:text-gray-400 outline-0 ">
+          <span class="material-symbols-outlined">search</span>
+        </li>
+      </ul>
+      <div class="flex gap-4 items-center">
+        <a routerLink="/login"
+           class="px-4 py-1 border-2 border-primary text-primary rounded-lg font-semibold">Login</a>
+        <a routerLink="/cadastro"
+           class="px-6 py-1 border-2 bg-primary text-white rounded-lg font-bold">Fazer cadastro</a>
+      </div>
+    </nav>
+
+  } @else {
+
+    <nav class="flex gap-12 items-center">
+      <ul class="flex gap-6 items-center">
+        <li class="font-bold text-secondary cursor-pointer hover:underline underline-offset-2">Início</li>
+        <li class="font-bold text-secondary cursor-pointer hover:underline underline-offset-2">Perfil</li>
+        <li class="flex gap-2 items-center border border-tertiary rounded-sm px-2 py-1">
+          <input type="text" placeholder="Pesquisar cursos" class="placeholder:text-gray-400 outline-0 ">
+          <span class="material-symbols-outlined">search</span>
+        </li>
+      </ul>
+    </nav>
+
+  }
+
+</header>

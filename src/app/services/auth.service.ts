@@ -17,9 +17,13 @@ export class AuthService {
       )
   }
 
-  storeAuthTokenInLocalStorage(authToken: AuthToken) {
+  storeAuthTokenInLocalStorage(authToken: AuthToken): AuthToken {
     localStorage.setItem("access", authToken.access);
     return authToken;
+  }
+
+  logout() {
+    localStorage.clear()
   }
 
   isAuthenticated(): boolean {
@@ -29,7 +33,7 @@ export class AuthService {
   isAccessTokenExpired(): boolean {
     if (!this.doesAccessTokenExist()) return true
 
-    const token: string = localStorage.getItem('access')!
+    const token: string = localStorage.getItem("access")!
     const encodedTokenPayload = token.split('.')[1]
     const decodedTokenPayload = JSON.parse(atob(encodedTokenPayload))
     const exp = decodedTokenPayload.exp

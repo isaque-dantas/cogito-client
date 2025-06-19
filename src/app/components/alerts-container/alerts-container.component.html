@@ -1,0 +1,13 @@
+<div class="fixed top-32 right-0 max-h-[320px] max-w-[320px]">
+  <ul class="flex flex-col gap-4 pb-4 pr-4">
+    @for (alert of alerts; track alert.id) {
+      <li class="alert-{{alert.type}} px-4 py-2 rounded-md flex gap-4 border-2 border-black">
+        <h3 class="text-semibold">{{ alert.body }}</h3>
+        <button
+          (click)="this.alertService.remove(alert.id!)"
+          type="button"
+          class="material-symbols-outlined cursor-pointer">close</button>
+      </li>
+    }
+  </ul>
+</div>

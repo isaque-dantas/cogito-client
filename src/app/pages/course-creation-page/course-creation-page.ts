@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {HeaderComponent} from '../../components/header/header.component';
+import {Header} from '../../components/header/header';
 import {FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {CourseFormService} from '../../services/course-form-service';
 import {CourseService} from '../../services/course.service';
@@ -11,7 +11,7 @@ import {HttpErrorResponse} from '@angular/common/http';
 @Component({
   selector: 'app-course-creation-page',
   imports: [
-    HeaderComponent,
+    Header,
     ReactiveFormsModule
   ],
   templateUrl: './course-creation-page.html',

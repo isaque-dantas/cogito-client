@@ -3,6 +3,7 @@ export interface Lesson {
   title: string
   position: number
   video_link?: string
+  status: LessonStatus
 }
 
 export interface LessonNestedForm {

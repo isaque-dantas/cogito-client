@@ -1,5 +1,5 @@
 import {Component, effect, inject} from '@angular/core';
-import {HeaderComponent} from '../../components/header/header.component';
+import {Header} from '../../components/header/header';
 import {CourseCard} from '../../components/course-card/course-card';
 import {Course} from '../../interfaces/course';
 import {CourseService as CourseService} from '../../services/course.service';
@@ -10,7 +10,7 @@ import {RouterLink} from '@angular/router';
 @Component({
   selector: 'app-home-page',
   imports: [
-    HeaderComponent,
+    Header,
     CourseCard,
     AsyncPipe,
     RouterLink

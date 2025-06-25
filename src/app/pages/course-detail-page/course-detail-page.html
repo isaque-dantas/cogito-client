@@ -1,0 +1,11 @@
+<app-header></app-header>
+<main class="flex">
+
+  @if (course$ | async; as course) {
+    <app-side-menu [course]="course"></app-side-menu>
+    <article></article>
+  } @else {
+    <p>Carregando...</p>
+  }
+
+</main>

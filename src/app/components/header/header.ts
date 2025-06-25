@@ -10,9 +10,9 @@ import {AuthService} from '../../services/auth.service';
     NgOptimizedImage,
     RouterLink
   ],
-  templateUrl: './header.component.html',
+  templateUrl: './header.html',
 })
-export class HeaderComponent implements OnInit {
+export class Header implements OnInit {
   isUserLogged: boolean = false;
   authService = inject(AuthService)
 

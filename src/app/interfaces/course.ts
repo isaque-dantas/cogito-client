@@ -6,6 +6,7 @@ export interface Course {
   title: string
   modules: Module[]
   user_who_created: User
+  is_subscribed: boolean
 }
 
 export interface CourseForm {

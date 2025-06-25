@@ -6,16 +6,17 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 import {provideHttpClient, withFetch, withInterceptors} from '@angular/common/http';
 import {errorLoggerInterceptor} from './interceptors/error-logger-interceptor';
 import {authInterceptor} from './interceptors/auth.interceptor';
+import {portugueseLanguageHeaderInterceptor} from './interceptors/portuguese-language-header-interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    // provideRouter(routes), provideClientHydration(withEventReplay()),
+    provideClientHydration(withEventReplay()),
     provideRouter(routes),
     provideHttpClient(
       withFetch(),
-      withInterceptors([authInterceptor, errorLoggerInterceptor])
+      withInterceptors([authInterceptor, errorLoggerInterceptor, portugueseLanguageHeaderInterceptor])
     )
   ]
 };

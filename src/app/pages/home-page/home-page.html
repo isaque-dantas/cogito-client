@@ -2,30 +2,47 @@
 <main class="my-20 flex flex-col gap-10 px-20">
   <h1 class="font-bold text-4xl text-secondary">Cursos disponíveis</h1>
 
-  <div class="flex gap-2 items-center border border-tertiary rounded-sm px-4 py-1 max-w-sm">
-    <input type="text" placeholder="Pesquisar cursos" class="placeholder:text-gray-400 outline-0 text-xl w-full">
-    <span class="material-symbols-outlined">search</span>
+  <div class="flex gap-8">
+    <a routerLink="/curso/adicionar" class="font-bold text-secondary text-xl flex gap-2 items-center border-2 border-secondary rounded-lg px-6 py-2 hover:bg-secondary hover:text-white transition-all">
+      <span>Adicionar curso</span>
+      <span class="material-symbols-outlined text-2xl">add</span>
+    </a>
+    <div class="flex gap-2 items-center border border-tertiary rounded-sm px-4 py-1 max-w-sm">
+      <input type="text" placeholder="Pesquisar cursos" class="placeholder:text-gray-400 outline-0 text-xl w-full">
+      <span class="material-symbols-outlined">search</span>
+    </div>
   </div>
 
-  <ul class="grid grid-cols-4 gap-6">
-    <li><app-course-card [course]="course"/></li>
-    <li><app-course-card [course]="course"/></li>
-    <li><app-course-card [course]="anotherCourse"/></li>
-    <li><app-course-card [course]="anotherCourse2"/></li>
-    <li><app-course-card [course]="course"/></li>
-    <li><app-course-card [course]="course"/></li>
-    <li><app-course-card [course]="course"/></li>
-    <li><app-course-card [course]="course"/></li>
-    <li><app-course-card [course]="course"/></li>
-  </ul>
-
-  <div class="flex flex-col gap-6 mt-16">
-    <h3 class="font-bold text-3xl text-secondary">Meus cursos</h3>
+  @if (courses$ | async; as courses) {
     <ul class="grid grid-cols-4 gap-6">
-      <li><app-course-card [course]="anotherCourse"/></li>
-      <li><app-course-card [course]="anotherCourse2"/></li>
-      <li><app-course-card [course]="course"/></li>
-      <li><app-course-card [course]="course"/></li>
+      @if (courses.length > 0) {
+        @for (course of courses; track course.id) {
+          <li>
+            <app-course-card [course]="course"></app-course-card>
+          </li>
+        }
+      } @else {
+        <li>Não foram encontrados cursos.</li>
+      }
     </ul>
-  </div>
+
+    <div class="flex flex-col gap-6 mt-16">
+      <h3 class="font-bold text-3xl text-secondary">Meus cursos</h3>
+      <ul class="grid grid-cols-4 gap-6">
+        @if (isUserSubscribedInAtLeastOneCourse(courses)) {
+          @for (course of courses; track course.id) {
+            @if (course.is_subscribed) {
+              <li>
+                <app-course-card [course]="course"/>
+              </li>
+            }
+          }
+        } @else {
+          <li>Você não está inscrito em nenhum curso.</li>
+        }
+      </ul>
+    </div>
+  } @else {
+    <li>Carregando...</li>
+  }
 </main>

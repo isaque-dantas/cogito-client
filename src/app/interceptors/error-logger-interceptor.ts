@@ -8,8 +8,10 @@ export const errorLoggerInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 500)
-        alert.error("Houve um erro inesperado. Contate o administrador do sistema.");
+      console.log(error)
+      if (error.status === 500) {
+        alert.error("Houve um erro inesperado. Contate o administrador do sistema.")
+      }
 
       return throwError(() => error)
     })

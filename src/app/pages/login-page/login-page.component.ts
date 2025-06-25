@@ -1,8 +1,9 @@
 import {Component, inject} from '@angular/core';
 import {FormBuilder, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {RouterLink} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 import {AuthService} from '../../services/auth.service';
 import {AlertService} from '../../services/alert';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-login-page',
@@ -23,17 +24,29 @@ export class LoginPage {
     password: ['', Validators.required],
   })
 
-  constructor(private auth: AuthService, private alert: AlertService) { }
+  constructor(private auth: AuthService, private alertService: AlertService, private router: Router) {
+  }
 
   onSubmit() {
     if (this.form.invalid) return;
 
     this.auth.login(this.form.value.email!, this.form.value.password!).subscribe({
-      next: result => this.alert.success("O login foi realizado com sucesso!"),
+      next: _ => {
+        this.alertService.success("O login foi realizado com sucesso!")
+        this.router.navigateByUrl("")
+      },
       error: error => {
-        if (error.status === 401) this.alert.error("E-mail e/ou senha incorretos.")
-        else if (error.status === 500) this.alert.error("Houve um erro inesperado. Contate o administrador do sistema.")
+        let msg: string | null = null
+
+        if (error.status === 401) msg = "E-mail e/ou senha incorretos."
+        else if (this.isErrorFromEmail(error)) msg = "O formato de e-mail é inválido."
+
+        if (msg) this.alertService.error(msg)
       },
     })
+  }
+
+  isErrorFromEmail(error: HttpErrorResponse) {
+    return error.status === 422 && (error.error.detail[0].loc as string[]).includes('email')
   }
 }

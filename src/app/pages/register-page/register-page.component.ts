@@ -1,9 +1,11 @@
 import {Component, inject} from '@angular/core';
-import {RouterLink} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {FormBuilder, FormControl, FormsModule, ReactiveFormsModule, ValidationErrors, Validators} from '@angular/forms';
 import {UserService} from '../../services/user.service';
 import {UserForm} from '../../interfaces/user';
 import {isCPF} from 'validation-br';
+import {AlertService} from '../../services/alert';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-register-page',
@@ -26,14 +28,18 @@ export class RegisterPage {
     password: ['', Validators.required],
   })
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private alertService: AlertService, private router: Router) { }
 
   onSubmit() {
     if (this.form.invalid) return;
 
     this.userService.register(this.form.value as UserForm).subscribe({
-      next: data => console.log("Usuário criado com sucesso!", data),
-      error: error => {
+      next: data => {
+        this.alertService.success(`Usuário '${data.name}' criado com sucesso.`)
+        this.router.navigateByUrl("/login")
+      },
+      error: (error: HttpErrorResponse) => {
+        this.alertService.error(error.error.detail)
       }
     })
   }

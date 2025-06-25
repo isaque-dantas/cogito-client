@@ -1,6 +1,6 @@
-import {inject, Injectable} from '@angular/core';
+import {Inject, inject, Injectable, PLATFORM_ID} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {catchError, Observable, of, tap} from 'rxjs';
+import {Observable, tap} from 'rxjs';
 import {AuthToken} from '../interfaces/auth-token';
 import {API_BASE_URL} from '../app.config';
 
@@ -9,6 +9,12 @@ import {API_BASE_URL} from '../app.config';
 })
 export class AuthService {
   http = inject(HttpClient);
+  private readonly isBrowser: boolean = false;
+
+  constructor(@Inject(PLATFORM_ID) platformId: any) {
+    this.isBrowser = platformId == "browser";
+    console.log(platformId);
+  }
 
   login(email: string, password: string): Observable<AuthToken> {
     return this.http.post<AuthToken>(`${API_BASE_URL}/auth/token`, {email, password})
@@ -18,19 +24,27 @@ export class AuthService {
   }
 
   storeAuthTokenInLocalStorage(authToken: AuthToken): AuthToken {
+    if (!this.isBrowser) return authToken
+
     localStorage.setItem("access", authToken.access);
-    return authToken;
+    return authToken
   }
 
   logout() {
+    if (!this.isBrowser) return;
+
     localStorage.clear()
   }
 
   isAuthenticated(): boolean {
-    return this.doesAccessTokenExist() && !this.isAccessTokenExpired()
+    if (!this.isBrowser) return false
+
+    return this.doesAccessTokenExist() && !this.hasAccessTokenExpired()
   }
 
-  isAccessTokenExpired(): boolean {
+  hasAccessTokenExpired(): boolean {
+    if (!this.isBrowser) return false
+
     if (!this.doesAccessTokenExist()) return true
 
     const token: string = localStorage.getItem("access")!
@@ -46,13 +60,15 @@ export class AuthService {
     return currentDate >= expirationDate
   }
 
-  doesAccessTokenExist() {
+  doesAccessTokenExist(): boolean {
+    if (!this.isBrowser) return false
+
     return !!localStorage.getItem('access');
   }
 
   getToken(): string | null {
-    if (!this.isAuthenticated()) return null
+    if (!this.isBrowser || !this.isAuthenticated()) return null
 
-    return "Bearer " + localStorage.getItem('access');
+    return "Bearer " + localStorage.getItem('access')!
   }
 }

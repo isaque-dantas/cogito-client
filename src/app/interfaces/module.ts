@@ -1,10 +1,10 @@
-import {Lesson, LessonNestedForm, LessonForm} from './lesson';
+import {LessonNestedForm, LessonForm, LessonNestedResponse} from './lesson';
 
 export interface Module {
   id: number
   title: string
   position: number
-  lessons: Lesson[]
+  lessons: LessonNestedResponse[]
 }
 
 export interface ModuleNestedForm {

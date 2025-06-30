@@ -1,0 +1,25 @@
+@reference '../../../styles.css';
+
+.lesson-item {
+  @apply p-2 w-full border rounded-lg flex gap-2 items-center relative transition-all;
+}
+
+.lesson-item:hover {
+  @apply ring-2 font-semibold;
+}
+
+.lesson-item:hover > .edit-button-wrapper {
+  @apply pl-4 opacity-100;
+}
+
+.lesson-item > a {
+  @apply text-[20px]! p-0.5 rounded-sm text-white transition-all;
+}
+
+.edit-button-wrapper {
+  @apply absolute left-full pl-0 opacity-0 transition-all;
+}
+
+.edit-button {
+  @apply p-1 border-2 border-tertiary rounded-lg text-tertiary cursor-pointer;
+}

@@ -10,3 +10,8 @@ export interface User {
   cpf: string;
   email: string;
 }
+
+export enum UserRoles {
+  student = "STUDENT",
+  coordinator = "COORDINATOR"
+}

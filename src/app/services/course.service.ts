@@ -30,4 +30,9 @@ export class CourseService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.base_url}/${id}`)
   }
+
+  subscribeIn(id: number) {
+    console.log(`Tentando com id ${id}`)
+    return this.http.post<Course>(`${this.base_url}/${id}/subscribe`, {})
+  }
 }

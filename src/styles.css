@@ -12,10 +12,17 @@
   --color-secondary: #0C73B3;
   --color-secondary-rgb: 12, 115, 179;
 
+  --color-tertiary: #003358;
+  --color-tertiary-rgb: 0, 51, 88;
+
   --color-black: #003358;
   --color-black-rgb: 0, 51, 88;
 }
 
 body {
   background-color: var(--color-white);
+}
+
+.material-symbols-outlined {
+  @apply select-none;
 }

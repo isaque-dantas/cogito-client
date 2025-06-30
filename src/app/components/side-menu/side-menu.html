@@ -1,4 +1,4 @@
-<div class="border-r border-gray-300 h-full max-h-screen overflow-y-auto p-8 max-w-sm">
+<aside class="border-r border-gray-300 h-full overflow-y-auto p-8 w-sm ">
   <div class="flex flex-col gap-10">
     @for (module of course.modules; track module.id) {
       <div class="flex flex-col gap-6">
@@ -11,19 +11,19 @@
               @case (LessonStatus.LOCKED) {
                 <li class="flex gap-2 items-center text-gray-500">
                   <span class="material-symbols-outlined text-[16px]!">lock</span>
-                  <span>{{ lesson.title }}</span>
+                  <span class="leading-tight">{{ lesson.title }}</span>
                 </li>
               }
               @case (LessonStatus.ACCESSED) {
                 <li class="flex gap-2 items-center text-green-700">
                   <span class="material-symbols-outlined text-[16px]!">check</span>
-                  <span>{{ lesson.title }}</span>
+                  <span class="leading-tight">{{ lesson.title }}</span>
                 </li>
               }
               @case (LessonStatus.ACCESSIBLE) {
                 <li class="flex gap-2 items-center">
                   <span class="w-2 h-2 bg-secondary rounded-full"></span>
-                  <span>{{ lesson.title }}</span>
+                  <span class="leading-tight">{{ lesson.title }}</span>
                 </li>
               }
             }
@@ -32,4 +32,4 @@
       </div>
     }
   </div>
-</div>
+</aside>

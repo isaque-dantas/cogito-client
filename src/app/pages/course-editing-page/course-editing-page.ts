@@ -1,6 +1,6 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {Header} from '../../components/header/header';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormArray, FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {CourseForm} from '../../interfaces/course';
 import {ModuleUpdateForm} from '../../interfaces/module';
 import {LessonForm} from '../../interfaces/lesson';
@@ -32,6 +32,20 @@ export class CourseEditingPage extends CourseFormBasePage implements OnInit{
     lessons: { id: number, data: LessonForm }[],
   }
 
+  declare form: FormGroup<{
+    id: FormControl<number | null>,
+    title: FormControl<string>,
+    modules: FormArray<FormGroup<{
+      id: FormControl<number | null>,
+      title: FormControl<string>,
+      lessons: FormArray<FormGroup<{
+        id: FormControl<number | null>,
+        title: FormControl<string>,
+        video_link: FormControl<string>
+      }>>
+    }>>
+  }>
+
   moduleFormService = inject(ModuleFormService)
   lessonFormService = inject(LessonFormService)
 
@@ -45,7 +59,7 @@ export class CourseEditingPage extends CourseFormBasePage implements OnInit{
           let courseForm: CourseForm = this.formService.getFormFromInstance(course)
           courseForm = this.formService.addUrlPrefixToVideoIds(courseForm)
 
-          this.form = this.formService.courseGroupFactory(
+          this.form = this.formService.courseEditingGroupFactory(
             course.modules.length,
             course.modules.map(m => m.lessons.length)
           )

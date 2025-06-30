@@ -28,20 +28,12 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
   formTitle!: string
 
   formService = inject(CourseFormService)
-  form!: FormGroup<{
-    title: FormControl<string>,
-    modules: FormArray<FormGroup<{
-      title: FormControl<string>,
-      lessons: FormArray<FormGroup<{
-        title: FormControl<string>,
-        video_link: FormControl<string>
-      }>>
-    }>>
-  }>
 
-  constructor() {
-    this.form = this.formService.courseGroupFactory()
-  }
+  form!: FormGroup<{
+    id: FormControl<number | null>,
+    title: FormControl<string>,
+    modules: FormArray<FormGroup>
+  }>
 
   get modules() {
     return this.form.controls.modules as FormArray<FormGroup>;

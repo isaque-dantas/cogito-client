@@ -1,3 +1,5 @@
+import {FormControl, UntypedFormGroup} from '@angular/forms';
+
 export interface Lesson {
   id: number
   title: string
@@ -24,6 +26,12 @@ export interface LessonNestedForm {
   video_link: string
 }
 
+export interface LessonNestedFormWithIds {
+  id: number
+  title: string
+  video_link: string
+}
+
 export interface LessonForm {
   title: string
   position: number
@@ -41,4 +49,15 @@ export enum LessonPositionRelatedToCourse {
   FIRST = "first",
   MIDDLE = "middle",
   LAST = "last",
+}
+
+export interface LessonFormGroup {
+  title: FormControl<string | null>,
+  video_link: FormControl<string | null>
+}
+
+export interface LessonFormGroupWithId {
+  id: FormControl<number | null>,
+  title: FormControl<string | null>,
+  video_link: FormControl<string | null>
 }

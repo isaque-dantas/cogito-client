@@ -9,9 +9,22 @@ import {
   Validators
 } from '@angular/forms';
 import {catchError, from, map, Observable, of} from 'rxjs';
-import {Course, CourseForm} from '../interfaces/course';
-import {LessonForm, LessonNestedForm, LessonNestedResponse} from '../interfaces/lesson';
-import {Module, ModuleNestedForm, ModuleUpdateForm} from '../interfaces/module';
+import {Course, CourseForm, CourseFormGroup, CourseFormGroupWithId, CourseFormWithIds} from '../interfaces/course';
+import {
+  LessonForm,
+  LessonFormGroup,
+  LessonFormGroupWithId,
+  LessonNestedForm, LessonNestedFormWithIds,
+  LessonNestedResponse
+} from '../interfaces/lesson';
+import {
+  Module,
+  ModuleFormGroup,
+  ModuleFormGroupWithId,
+  ModuleNestedForm,
+  ModuleNestedFormWithIds,
+  ModuleUpdateForm
+} from '../interfaces/module';
 
 @Injectable({
   providedIn: 'root'
@@ -20,29 +33,25 @@ export class CourseFormService {
   constructor(private fb: FormBuilder) {
   }
 
-  courseGroupFactory(quantityOfModules?: number, quantitiesOfLessons?: number[], shouldAddIdsControls: boolean = false) {
-    if (!shouldAddIdsControls) {
-      return this.fb.group({
-        title: ['', [Validators.required]],
-        modules: this.modulesFactory(quantityOfModules, quantitiesOfLessons)
-      })
-    }
-
-    return new FormGroup({
-      id: new FormControl<number | null>(null),
-      title: new FormControl<string>('', Validators.required),
-      modules: this.modulesFactory(quantityOfModules, quantitiesOfLessons, true)
+  courseCreationGroupFactory(quantityOfModules?: number, quantitiesOfLessons?: number[]) {
+    return new FormGroup<CourseFormGroup>({
+      title: new FormControl('', Validators.required),
+      modules: this.modulesFactory(quantityOfModules, quantitiesOfLessons, false) as FormArray<FormGroup<ModuleFormGroup>>
     })
   }
 
   courseEditingGroupFactory(quantityOfModules?: number, quantitiesOfLessons?: number[]) {
-    return this.courseGroupFactory(quantityOfModules, quantitiesOfLessons, true)
+    return new FormGroup<CourseFormGroupWithId>({
+      id: new FormControl(null),
+      title: new FormControl('', Validators.required),
+      modules: this.modulesFactory(quantityOfModules, quantitiesOfLessons, true) as FormArray<FormGroup<ModuleFormGroupWithId>>
+    })
   }
 
   getModulesGroups(quantityOfModules?: number, quantitiesOfLessons?: number[], shouldAddIdsControls: boolean = false) {
     if (!quantityOfModules && !quantitiesOfLessons) return [this.moduleGroupFactory(1, shouldAddIdsControls)]
 
-    let modules = []
+    let modules: (FormGroup<ModuleFormGroupWithId> | FormGroup<ModuleFormGroup>)[] = []
 
     if (quantityOfModules && !quantitiesOfLessons) {
       for (let i = 0; i < quantityOfModules; i++) modules.push(this.moduleGroupFactory(1, shouldAddIdsControls))
@@ -55,10 +64,10 @@ export class CourseFormService {
 
   modulesFactory(quantityOfModules?: number, quantitiesOfLessons?: number[], shouldAddIdsControls: boolean = false) {
     const modules = this.getModulesGroups(quantityOfModules, quantitiesOfLessons, shouldAddIdsControls)
-    return this.fb.array(modules, Validators.min(1))
+    return new FormArray(modules, Validators.min(1))
   }
 
-  moduleGroupFactory(quantityOfLessons?: number, shouldAddIdsControls: boolean = false): FormGroup {
+  moduleGroupFactory(quantityOfLessons?: number, shouldAddIdsControls: boolean = false) {
     let lessons = [this.lessonGroupFactory(shouldAddIdsControls)];
     if (quantityOfLessons) {
       for (let i = 1; i < quantityOfLessons; i++) lessons.push(this.lessonGroupFactory(shouldAddIdsControls))
@@ -67,17 +76,19 @@ export class CourseFormService {
     if (!shouldAddIdsControls)
       return this.fb.group({
         title: ['', [Validators.required]],
-        lessons: this.fb.array(lessons, Validators.min(1))
-      })
+        lessons: this.fb.array(lessons as FormGroup<LessonFormGroup>[], Validators.min(1))
+      }) as FormGroup<ModuleFormGroup>
 
-    return new FormGroup({
-      id: new FormControl<number | null>(null),
-      title: new FormControl<string>('', Validators.required),
-      lessons: new FormArray(lessons, Validators.min(1))
-    })
+    return (
+      new FormGroup<ModuleFormGroupWithId>({
+        id: new FormControl(null),
+        title: new FormControl('', Validators.required),
+        lessons: new FormArray(lessons as FormGroup<LessonFormGroupWithId>[], Validators.min(1))
+      })
+    )
   }
 
-  lessonGroupFactory(shouldAddIdControl: boolean = false): FormGroup {
+  lessonGroupFactory(shouldAddIdControl: boolean = false): FormGroup<LessonFormGroup> | FormGroup<LessonFormGroupWithId> {
     if (!shouldAddIdControl)
       return this.fb.group({
         title: ['', [Validators.required]],
@@ -85,11 +96,11 @@ export class CourseFormService {
           validators: [Validators.required],
           asyncValidators: [this.existentYoutubeVideoLinkValidator()]
         }]
-      })
+      }) as FormGroup<LessonFormGroup>
 
-    return new FormGroup({
-      id: new FormControl<number | null>(null),
-      title: new FormControl<string>('', Validators.required),
+    return new FormGroup<LessonFormGroupWithId>({
+      id: new FormControl(null),
+      title: new FormControl('', Validators.required),
       video_link: new FormControl('', {
         validators: [Validators.min(1)],
         asyncValidators: [this.existentYoutubeVideoLinkValidator()]
@@ -97,9 +108,8 @@ export class CourseFormService {
     })
   }
 
-  getLessonsFromModule(module: FormGroup):
-    FormGroup[] {
-    return (module as any).controls.lessons.controls as FormGroup[]
+  getLessonsFromModule(module: FormGroup<ModuleFormGroup>) {
+    return module.controls.lessons.controls as FormGroup<LessonFormGroup>[]
   }
 
   existentYoutubeVideoLinkValidator() {
@@ -117,8 +127,7 @@ export class CourseFormService {
     }
   }
 
-  getVideoIdFromRawUrl(url: string):
-    string | null {
+  getVideoIdFromRawUrl(url: string): string | null {
     const pattern = new RegExp(/v=[a-zA-Z\d]{11}$/)
     const patternLocalization = url.search(pattern)
 
@@ -133,77 +142,61 @@ export class CourseFormService {
     )
   }
 
-  replaceVideoLinksByIdsInCourseForm(courseForm: CourseForm):
-    CourseForm {
-    return this.applyMapForCourseLessons(
-      courseForm,
-      l => ({...l, video_link: this.getVideoIdFromRawUrl(l.video_link)!})
-    )
+  replaceVideoLinksByIdsInCourseForm(courseForm: CourseForm): CourseForm {
+    const lessonMapper =
+      (l: LessonNestedForm): LessonNestedForm => ({...l, video_link: this.getVideoIdFromRawUrl(l.video_link)!})
+    const moduleMapper =
+      (m: ModuleNestedForm): ModuleNestedForm => ({...m, lessons: m.lessons.map(lessonMapper)})
+
+    return {
+      ...courseForm,
+      modules: courseForm.modules.map(moduleMapper)
+    }
   }
 
-  getFormFromInstance(course: Course):
-    CourseForm {
+  getFormFromInstance(course: Course): CourseFormWithIds {
     return {
+      id: course.id,
       title: course.title,
       modules: course.modules.map(this.getModuleFormFromInstance.bind(this))
-    };
+    }
   }
 
-  getModuleFormFromInstance(module: Module):
-    ModuleNestedForm {
+  getModuleFormFromInstance(module: Module): ModuleNestedFormWithIds {
     return {
+      id: module.id,
       title: module.title,
       lessons: module.lessons.map(this.getLessonFormFromInstance)
     }
   }
 
-  getLessonFormFromInstance(lesson: LessonNestedResponse):
-    LessonNestedForm {
+  getLessonFormFromInstance(lesson: LessonNestedResponse): LessonNestedFormWithIds {
     return {
+      id: lesson.id,
       title: lesson.title,
       video_link: lesson.video_link!
     }
   }
 
-  addUrlPrefixToVideoIds(course: CourseForm):
-    CourseForm {
+  addUrlPrefixToVideoIds(courseForm: CourseFormWithIds): CourseFormWithIds {
     const getVideoLinkFromId = (videoId: string): string => `https://www.youtube.com/watch?v=${videoId}`
 
-    return this.applyMapForCourseLessons(
-      course,
-      l => ({...l, video_link: getVideoLinkFromId(l.video_link!)})
-    )
-  }
+    const lessonMapper =
+      (l: LessonNestedFormWithIds): LessonNestedFormWithIds => ({...l, video_link: getVideoLinkFromId(l.video_link)!})
+    const moduleMapper =
+      (m: ModuleNestedFormWithIds): ModuleNestedFormWithIds => ({...m, lessons: m.lessons.map(lessonMapper)})
 
-  applyMapForCourseLessons(course: CourseForm, callback: (lesson: LessonNestedForm) => LessonNestedForm):
-    CourseForm {
     return {
-      ...course,
-      modules: course.modules.map(m =>
-        ({
-          ...m,
-          lessons: m.lessons.map(callback)
-        })
-      )
+      ...courseForm,
+      modules: courseForm.modules.map(moduleMapper)
     }
   }
 
-  getEntitiesToBeUpdated(form: FormGroup<{
-    title: FormControl<string>,
-    modules: FormArray<FormGroup<{
-      title: FormControl<string>,
-      lessons: FormArray<FormGroup<{
-        title: FormControl<string>,
-        video_link: FormControl<string>
-      }>>
-    }>>
-  }>):
-    {
-      course?: { title: string },
-      modules: { id: number, data: ModuleUpdateForm }[],
-      lessons:
-        { id: number, data: LessonForm }[],
-    } {
+  getEntitiesToBeUpdated(form: FormGroup<CourseFormGroupWithId>): {
+    course?: { title: string },
+    modules: { id: number, data: ModuleUpdateForm }[],
+    lessons: { id: number, data: LessonForm }[],
+  } {
     let data: any = {modules: [], lessons: []}
     data.modules = form.controls.modules.controls.filter(m => m.dirty).map(m => ({}))
 
@@ -216,12 +209,3 @@ export class CourseFormService {
     return data
   }
 }
-
-
-// FormGroup<{
-//     title: FormControl<string>,
-//     modules: FormArray<FormGroup<{
-//       title: FormControl<string>,
-//       lessons: FormArray<FormGroup<{ title: FormControl<string>, video_link: FormControl<string> }>>
-//     }>>
-//   }>

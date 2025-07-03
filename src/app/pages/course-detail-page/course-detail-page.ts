@@ -10,6 +10,8 @@ import {LessonStatus} from '../../interfaces/lesson';
 import {HttpErrorResponse} from '@angular/common/http';
 import {AuthService} from '../../services/auth.service';
 import {PercentagePipe} from '../../pipes/percentage-pipe';
+import {ModuleTitlePipe} from '../../pipes/module-title-pipe';
+import {LessonTitlePipe} from '../../pipes/lesson-title-pipe';
 
 @Component({
   selector: 'app-course-detail-page',
@@ -19,7 +21,9 @@ import {PercentagePipe} from '../../pipes/percentage-pipe';
     AsyncPipe,
     RouterLink,
     PercentagePipe,
-    NgTemplateOutlet
+    NgTemplateOutlet,
+    ModuleTitlePipe,
+    LessonTitlePipe
   ],
   templateUrl: './course-detail-page.html',
   styleUrl: './course-detail-page.css',
@@ -94,6 +98,14 @@ export class CourseDetailPage {
 
         this.alertService.error("Ocorreu um erro ao tentar inscrever você neste curso. Tente novamente.")
       }
+    })
+  }
+
+  deleteCourse(id: number) {
+    console.log("tentando exluir id", id)
+    this.courseService.delete(id).subscribe({
+      next: () => this.alertService.success(`Curso #${id} excluído com sucesso.`),
+      error: () => this.alertService.error("Ocorreu um erro ao tentar excluir o curso. Tente novamente.")
     })
   }
 

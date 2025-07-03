@@ -1,19 +1,19 @@
 @reference '../../../styles.css';
 
 .lesson-item {
-  @apply p-2 w-full border rounded-lg flex gap-2 items-center relative transition-all;
+  @apply p-2 w-full border rounded-lg flex gap-2 items-center relative transition-all cursor-pointer;
 }
 
 .lesson-item:hover {
-  @apply ring-2 font-semibold;
+  @apply ring-1 scale-[101%];
 }
 
 .lesson-item:hover > .edit-button-wrapper {
   @apply pl-4 opacity-100;
 }
 
-.lesson-item > a {
-  @apply text-[20px]! p-0.5 rounded-sm text-white transition-all;
+.lesson-item > button {
+  @apply text-[20px]! p-0.5 rounded-sm text-white transition-all cursor-pointer;
 }
 
 .edit-button-wrapper {

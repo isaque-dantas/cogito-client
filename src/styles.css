@@ -26,3 +26,7 @@ body {
 .material-symbols-outlined {
   @apply select-none;
 }
+
+.youtube-player-placeholder-button {
+  cursor: pointer;
+}

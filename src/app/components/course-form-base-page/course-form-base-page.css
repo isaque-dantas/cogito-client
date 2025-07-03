@@ -1,15 +1,23 @@
 @reference '../../../styles.css';
 
+.input-wrapper {
+  @apply px-4 py-2 border border-gray-600 rounded-lg flex gap-1 items-center;
+}
+
+.input-wrapper input {
+  @apply p-0 flex-1 border-0 rounded-none;
+}
+
 input {
   @apply px-4 py-2 text-xl placeholder:text-gray-400 border border-gray-600 rounded-lg outline-0;
 }
 
-label {
-  @apply text-gray-600;
-}
-
 .form-control {
   @apply flex flex-col gap-1;
+}
+
+.form-control > label {
+  @apply text-gray-600;
 }
 
 button.delete-btn {

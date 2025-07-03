@@ -1,4 +1,5 @@
-import {FormControl, UntypedFormGroup} from '@angular/forms';
+import {FormControl} from '@angular/forms';
+import {ModuleNestedResponse} from './module';
 
 export interface Lesson {
   id: number
@@ -6,7 +7,7 @@ export interface Lesson {
   position: number
   video_link?: string
   status: LessonStatus
-  parent_module_title: string
+  parent_module: ModuleNestedResponse
   parent_course_title: string
   position_related_to_course: string
   previous_lesson_id?: number
@@ -29,13 +30,20 @@ export interface LessonNestedForm {
 export interface LessonNestedFormWithIds {
   id: number
   title: string
-  video_link: string
+  video_link: string,
+  position: number
 }
 
 export interface LessonForm {
   title: string
   position: number
   video_link: string
+}
+
+export interface LessonUpdateForm {
+  title: string | null
+  position: number | null
+  video_link: string | null
 }
 
 
@@ -59,5 +67,6 @@ export interface LessonFormGroup {
 export interface LessonFormGroupWithId {
   id: FormControl<number | null>,
   title: FormControl<string | null>,
-  video_link: FormControl<string | null>
+  video_link: FormControl<string | null>,
+  position: FormControl<number | null>
 }

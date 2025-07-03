@@ -17,10 +17,12 @@
         </div>
 
         <div class="flex flex-col gap-8">
-          <div class="flex gap-6 items-center">
+          <div class="flex gap-4 items-center">
             <h3 class="font-bold text-secondary text-3xl">Módulos</h3>
             <button type="button" (click)="addModule()"
-                    class="cursor-pointer material-symbols-outlined rounded-lg bg-secondary text-white p-0.5">add
+                    class="cursor-pointer rounded-lg hover:bg-secondary hover:text-white border border-secondary text-secondary px-2 py-0.5 flex items-center gap-2 transition-all">
+              <span class="font-semibold">Adicionar módulo</span>
+              <span class="material-symbols-outlined">add</span>
             </button>
           </div>
           <div formArrayName="modules" class="flex flex-col gap-16">
@@ -29,15 +31,24 @@
                 <span class="text-gray-500">Módulo #{{ moduleIndex + 1 }}</span>
                 <div [formGroupName]="moduleIndex"
                      class="flex flex-col gap-2 rounded-2xl border border-gray-300 p-6 bg-sky-50/50 relative">
+
+                  @if (module.get('position')) {
+                    <input type="text" class="invisible" formControlName="position" [value]="moduleIndex">
+                  }
+
                   <div class="form-control">
                     <label for="module-title-{{moduleIndex}}">Título*</label>
-                    <input
-                      id="module-title-{{moduleIndex}}"
-                      type="text"
-                      placeholder="Título"
-                      formControlName="title"
-                      [value]="module.value.title"
-                    >
+                    <div class="input-wrapper">
+                      <label for="module-title-{{moduleIndex}}"
+                             class="text-secondary w-fit leading-none text-lg">Módulo {{ moduleIndex + 1 }} -</label>
+                      <input
+                        id="module-title-{{moduleIndex}}"
+                        type="text"
+                        placeholder="Título"
+                        formControlName="title"
+                        [value]="module.value.title"
+                      >
+                    </div>
                     @if (module.get('title')!.dirty && module.get('title')!.getError('required')) {
                       <span class="error-message">Este campo é obrigatório.</span>
                     }
@@ -46,61 +57,78 @@
                     <div class="flex gap-4 items-center">
                       <h5 class="font-bold text-secondary text-2xl">Aulas</h5>
                       <button type="button" (click)="addLesson(moduleIndex)"
-                              class="cursor-pointer material-symbols-outlined rounded-md bg-secondary text-white p-0.5">
-                        add
+                              class="cursor-pointer rounded-lg hover:bg-secondary hover:text-white border border-secondary text-secondary px-2 py-0.5 flex items-center gap-2 transition-all">
+                        <span class="font-semibold">Adicionar aula</span>
+                        <span class="material-symbols-outlined">add</span>
                       </button>
                     </div>
 
                     <ng-container formArrayName="lessons">
                       @for (lesson of formService.getLessonsFromModule(module); let
                         lessonIndex = $index; track lessonIndex) {
-                        <div [formGroupName]="lessonIndex"
-                             class="flex flex-col gap-4 rounded-lg border border-gray-300 p-4 relative pr-8">
-                          <div class="form-control">
-                            <label for="lesson-title-{{moduleIndex}}-{{lessonIndex}}">Título*</label>
+                        <ng-container [formGroupName]="lessonIndex">
+                          @if (lesson.get('position')) {
+                            {{ lessonIndex }}
                             <input
-                              id="lesson-title-{{moduleIndex}}-{{lessonIndex}}"
+                              id="lesson-position-{{moduleIndex}}-{{lessonIndex}}"
                               type="text"
-                              placeholder="Título"
-                              formControlName="title"
-                              [value]="lesson.value.title"
-                            >
-                            @if (lesson.get('title')!.dirty && lesson.get('title')!.getError('required')) {
-                              <span class="error-message">Este campo é obrigatório.</span>
-                            }
-                          </div>
-                          <div class="form-control">
-                            <label for="lesson-video-link-{{moduleIndex}}-{{lessonIndex}}">Link do vídeo*</label>
-                            <input
-                              id="lesson-video-link-{{moduleIndex}}-{{lessonIndex}}"
-                              type="text"
-                              placeholder="Link do vídeo"
-                              formControlName="video_link"
-                              [value]="lesson.value.video_link"
-                            >
-                            @if (lesson.get('video_link')!.dirty) {
-                              @if (lesson.get('video_link')!.getError('required')) {
+                              class="absolute invisible pointer-events-none"
+                              formControlName="position"
+                              [value]="lessonIndex">
+                          }
+
+                          <div class="flex flex-col gap-4 rounded-lg border border-gray-300 p-4 relative pr-8">
+                            <div class="form-control">
+                              <label for="lesson-title-{{moduleIndex}}-{{lessonIndex}}">Título*</label>
+                              <div class="input-wrapper">
+                                <label for="lesson-title-{{moduleIndex}}-{{lessonIndex}}"
+                                       class="text-secondary w-fit leading-none text-lg">Aula {{ lessonIndex + 1 }}
+                                  -</label>
+                                <input
+                                  id="lesson-title-{{moduleIndex}}-{{lessonIndex}}"
+                                  type="text"
+                                  placeholder="Título"
+                                  formControlName="title"
+                                  [value]="lesson.value.title"
+                                >
+                              </div>
+                              @if (lesson.get('title')!.dirty && lesson.get('title')!.getError('required')) {
                                 <span class="error-message">Este campo é obrigatório.</span>
                               }
-                              @if (lesson.get('video_link')!.getError('hasNoVideoId')) {
-                                <span
-                                  class="error-message flex flex-col gap-1"><span>O link não possui um ID.</span> <span
-                                  class="text-gray-500 text-sm">Exemplo de formato válido: https://www.youtube.com/watch?v=OIuG1bBkfs0</span>
+                            </div>
+                            <div class="form-control">
+                              <label for="lesson-video-link-{{moduleIndex}}-{{lessonIndex}}">Link do vídeo*</label>
+                              <input
+                                id="lesson-video-link-{{moduleIndex}}-{{lessonIndex}}"
+                                type="text"
+                                placeholder="Link do vídeo"
+                                formControlName="video_link"
+                                [value]="lesson.value.video_link"
+                              >
+                              @if (lesson.get('video_link')!.dirty) {
+                                @if (lesson.get('video_link')!.getError('required')) {
+                                  <span class="error-message">Este campo é obrigatório.</span>
+                                }
+                                @if (lesson.get('video_link')!.getError('hasNoVideoId')) {
+                                  <span
+                                    class="error-message flex flex-col gap-1"><span>O link não possui um ID.</span> <span
+                                    class="text-gray-500 text-sm">Exemplo de formato válido: https://www.youtube.com/watch?v=OIuG1bBkfs0</span>
                                 </span>
+                                }
+                                @if (lesson.get('video_link')!.getError('doesNotExist')) {
+                                  <span class="error-message flex flex-col gap-1">O link não existe.</span>
+                                }
                               }
-                              @if (lesson.get('video_link')!.getError('doesNotExist')) {
-                                <span class="error-message flex flex-col gap-1">O link não existe.</span>
-                              }
-                            }
+                            </div>
+                            <button
+                              type="button"
+                              (click)="removeLesson(moduleIndex, lessonIndex)"
+                              [class.invisible]="formService.getLessonsFromModule(module).length == 1"
+                              class="delete-btn material-symbols-outlined right-0 top-0 translate-y-4 translate-x-1/2 bg-sky-50 text-xl! py-1 px-2 rounded-full">
+                              delete
+                            </button>
                           </div>
-                          <button
-                            type="button"
-                            (click)="removeLesson(moduleIndex, lessonIndex)"
-                            [class.invisible]="formService.getLessonsFromModule(module).length == 1"
-                            class="delete-btn material-symbols-outlined right-0 top-0 translate-y-4 translate-x-1/2 bg-sky-50 text-xl! py-1 px-2 rounded-full">
-                            delete
-                          </button>
-                        </div>
+                        </ng-container>
                       }
                     </ng-container>
                   </div>

@@ -2,28 +2,26 @@
   <div class="flex flex-col gap-10">
     @for (module of course.modules; track module.id) {
       <div class="flex flex-col gap-6">
-        <h5 class="flex items-center"><span
-          class="text-gray-500 text-sm mr-2 border border-gray-500 rounded-lg px-1 ">{{ module.position + 1 }}</span><span
-          class="text-gray-600 text-xl font-semibold">{{ module.title }}</span></h5>
+        <h5 class="flex items-center text-gray-600 text-xl font-semibold">{{ module | moduleTitle }}</h5>
         <ul class="flex flex-col gap-4">
           @for (lesson of module.lessons; track lesson.id) {
             @switch (lesson.status) {
               @case (LessonStatus.LOCKED) {
                 <li class="flex gap-2 items-center text-gray-500">
                   <span class="material-symbols-outlined text-[16px]!">lock</span>
-                  <span class="leading-tight">{{ lesson.title }}</span>
+                  <span class="leading-tight">{{ lesson | lessonTitle }}</span>
                 </li>
               }
               @case (LessonStatus.ACCESSED) {
                 <li class="flex gap-2 items-center text-green-700">
                   <span class="material-symbols-outlined text-[16px]!">check</span>
-                  <span class="leading-tight">{{ lesson.title }}</span>
+                  <span class="leading-tight">{{ lesson | lessonTitle }}</span>
                 </li>
               }
               @case (LessonStatus.ACCESSIBLE) {
                 <li class="flex gap-2 items-center">
-                  <span class="w-2 h-2 bg-secondary rounded-full"></span>
-                  <span class="leading-tight">{{ lesson.title }}</span>
+                  <span class="w-2 h-2 bg-secondary rounded-full shrink-0"></span>
+                  <span class="leading-tight">{{ lesson | lessonTitle }}</span>
                 </li>
               }
             }

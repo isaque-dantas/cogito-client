@@ -1,10 +1,15 @@
 import {Component, Input} from '@angular/core';
 import {Course} from '../../interfaces/course';
 import {LessonStatus} from '../../interfaces/lesson';
+import {LessonTitlePipe} from '../../pipes/lesson-title-pipe';
+import {ModuleTitlePipe} from '../../pipes/module-title-pipe';
 
 @Component({
   selector: 'app-side-menu',
-  imports: [],
+  imports: [
+    LessonTitlePipe,
+    ModuleTitlePipe
+  ],
   templateUrl: './side-menu.html',
   styleUrl: './side-menu.css'
 })

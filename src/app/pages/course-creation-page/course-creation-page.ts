@@ -3,12 +3,14 @@ import {Header} from '../../components/header/header';
 import {CourseForm, CourseFormGroup} from '../../interfaces/course';
 import {CourseFormBasePage} from '../../components/course-form-base-page/course-form-base-page';
 import {FormArray, FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {NgxMaskDirective} from 'ngx-mask';
 
 @Component({
   selector: 'app-course-creation-page',
   imports: [
     Header,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxMaskDirective
   ],
   templateUrl: '../../components/course-form-base-page/course-form-base-page.html',
   styleUrls: [

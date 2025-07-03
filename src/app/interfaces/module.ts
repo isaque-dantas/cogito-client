@@ -14,21 +14,28 @@ export interface ModuleNestedForm {
   lessons: LessonNestedForm[]
 }
 
+export interface ModuleNestedResponse {
+  id: number
+  title: string
+  position: number
+}
+
 export interface ModuleNestedFormWithIds {
   id: number
   title: string
-  lessons: LessonNestedFormWithIds[]
+  lessons: LessonNestedFormWithIds[],
+  position: number
 }
 
 export interface ModuleForm {
   title: string
   position: number
-  lessons: LessonForm[]
+  lessons: LessonNestedForm[]
 }
 
 export interface ModuleUpdateForm {
-  title: string
-  position: number
+  title: string | null
+  position: number | null
 }
 
 export interface ModuleFormGroup {
@@ -39,5 +46,6 @@ export interface ModuleFormGroup {
 export interface ModuleFormGroupWithId {
   id: FormControl<number | null>,
   title: FormControl<string | null>,
-  lessons: FormArray<FormGroup<LessonFormGroupWithId>>
+  lessons: FormArray<FormGroup<LessonFormGroupWithId>>,
+  position: FormControl<number | null>
 }

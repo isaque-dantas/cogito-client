@@ -7,6 +7,7 @@ import {provideHttpClient, withFetch, withInterceptors} from '@angular/common/ht
 import {errorLoggerInterceptor} from './interceptors/error-logger-interceptor';
 import {authInterceptor} from './interceptors/auth.interceptor';
 import {portugueseLanguageHeaderInterceptor} from './interceptors/portuguese-language-header-interceptor';
+import {provideEnvironmentNgxMask} from 'ngx-mask';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,7 +18,8 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withFetch(),
       withInterceptors([authInterceptor, errorLoggerInterceptor, portugueseLanguageHeaderInterceptor])
-    )
+    ),
+    provideEnvironmentNgxMask()
   ]
 };
 

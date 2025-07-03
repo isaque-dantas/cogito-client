@@ -6,34 +6,37 @@
       <app-side-menu [course]="course"></app-side-menu>
       <article class="max-w-4xl w-full px-10 mx-auto my-20">
         @if (authService.isAuthenticated()) {
-          <div class="flex gap-6 items-center mb-8">
+          <div class="flex items-center mb-8">
             @if (course.is_subscribed && course.has_user_finished) {
-              <p class="flex gap-1 text-green-700">
+              <p class="flex gap-1 text-green-700 mr-6">
                 <span>Curso finalizado</span>
                 <span class="material-symbols-outlined">check</span>
               </p>
+
             } @else if (!course.is_subscribed) {
               <button
                 (click)="subscribeIntoCourse(course!.id)"
                 type="button"
-                class="flex gap-2 px-2 py-1 border-2 rounded-lg border-secondary text-secondary font-semibold mx-4 cursor-pointer hover:scale-105 transition-all">
+                class="mr-6 flex gap-2 px-2 py-1 border-2 rounded-lg border-secondary text-secondary font-semibold cursor-pointer hover:scale-105 transition-all">
                 <span>Realizar inscrição</span>
                 <span class="material-symbols-outlined">arrow_circle_right</span>
               </button>
             }
-            @if (authService.isLoggedUserCoordinator()) {
-              <div class="w-1 h-1 bg-gray-500 rounded-full "></div>
 
+            @if (authService.isLoggedUserCoordinator()) {
+              @if (!course.is_subscribed) {
+                <div class="w-1 h-1 bg-gray-500 rounded-full mr-6"></div>
+              }
               <a routerLink="/curso/{{course.id}}/editar"
-                 class="flex text-tertiary gap-2 items-center border border-tertiary px-2 py-0.5 rounded-lg">
+                 class="mr-6 flex text-tertiary gap-2 items-center border border-tertiary px-2 py-0.5 rounded-lg">
                 <span>Editar curso</span>
                 <span class="material-symbols-outlined text-[20px]!">edit</span>
               </a>
 
-<!--              <div class="w-1 h-1 bg-gray-500 rounded-full "></div>-->
-
-              <button routerLink="/curso/{{course.id}}/editar"
-                      class="flex gap-2 items-center border border-gray-500 text-gray-500 hover:border-red-800 hover:text-white hover:bg-red-800 p-1 rounded-lg transition-all cursor-pointer">
+              <button
+                (click)="deleteCourse(course!.id)"
+                class="flex gap-2 items-center border border-gray-500 text-gray-500 hover:border-red-800 hover:text-white hover:bg-red-800 p-1 rounded-lg transition-all cursor-pointer"
+              >
                 <span class="material-symbols-outlined text-[20px]!">delete</span>
               </button>
             }
@@ -44,7 +47,7 @@
 
         <h1 class="text-4xl text-secondary font-bold">{{ course.title }}</h1>
 
-        @if (course.is_subscribed && !course.has_user_finished && true) {
+        @if (course.is_subscribed && !course.has_user_finished) {
           <div class="flex flex-col gap-1 mt-8">
             <p class="text-gray-500 italic text-sm">Você completou {{ course.progress_level_percentage | percentage }}
               do curso.</p>
@@ -61,36 +64,34 @@
         <div class="flex flex-col gap-12 mt-6">
           @for (module of course.modules; track module.id) {
             <div>
-              <h3 class="mb-6 text-2xl text-tertiary font-medium">{{ module.title }}</h3>
+              <h3 class="mb-6 text-2xl text-tertiary font-medium">{{ module | moduleTitle }}</h3>
               <ul class="flex flex-col gap-4">
                 @for (lesson of module.lessons; track lesson.id) {
                   @switch (lesson.status) {
                     @case (LessonStatus.LOCKED) {
-                      <li
-                        class="lesson-item border-gray-500 text-gray-500">
+                      <li class="lesson-item border-gray-500 text-gray-500">
                         <span class="material-symbols-outlined text-[16px]!">lock</span>
-                        <p class="w-full">{{ lesson.title }}</p>
-                        <a class="material-symbols-outlined bg-gray-500 cursor-not-allowed">chevron_right</a>
-                        <ng-container *ngTemplateOutlet="editButton"></ng-container>
+                        <p class="w-full">{{ lesson | lessonTitle }}</p>
                       </li>
                     }
                     @case (LessonStatus.ACCESSED) {
                       <li
-                        class="lesson-item border-green-700 text-green-700">
+                        routerLink="/curso/{{course.id}}/aula/{{lesson.id}}"
+                        class="lesson-item border-green-700 text-green-700"
+                      >
                         <span class="material-symbols-outlined text-[16px]!">check</span>
-                        <p class="w-full">{{ lesson.title }}</p>
-                        <a routerLink="/curso/{{course.id}}/aula/{{lesson.id}}"
-                           class="material-symbols-outlined bg-green-700 hover:scale-110">chevron_right</a>
-                        <ng-container *ngTemplateOutlet="editButton"></ng-container>
+                        <p class="w-full">{{ lesson | lessonTitle }}</p>
+                        <button type="button" class="material-symbols-outlined bg-green-700">chevron_right</button>
                       </li>
                     }
                     @case (LessonStatus.ACCESSIBLE) {
-                      <li class="lesson-item border-secondary text-secondary">
+                      <li
+                        routerLink="/curso/{{course.id}}/aula/{{lesson.id}}"
+                        class="lesson-item border-secondary text-secondary"
+                      >
                         <span class="material-symbols-outlined text-[16px]!">sticky_note_2</span>
-                        <p class="w-full">{{ lesson.title }}</p>
-                        <a routerLink="/curso/{{course.id}}/aula/{{lesson.id}}"
-                           class="material-symbols-outlined bg-secondary hover:scale-110">chevron_right</a>
-                        <ng-container *ngTemplateOutlet="editButton"></ng-container>
+                        <p class="w-full">{{ lesson | lessonTitle }}</p>
+                        <button type="button" class="material-symbols-outlined bg-secondary">chevron_right</button>
                       </li>
                     }
                   }

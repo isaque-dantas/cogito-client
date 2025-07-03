@@ -2,7 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {API_BASE_URL} from '../app.config';
-import {Course, CourseForm} from '../interfaces/course';
+import {Course, CourseForm, CoursePatchForm} from '../interfaces/course';
 
 @Injectable({
   providedIn: 'root'
@@ -23,8 +23,8 @@ export class CourseService {
     return this.http.post<Course>(this.base_url, course)
   }
 
-  edit(course: CourseForm, id: number): Observable<void> {
-    return this.http.put<void>(`${this.base_url}/${id}`, course)
+  edit(course: CoursePatchForm, id: number): Observable<void> {
+    return this.http.patch<void>(`${this.base_url}/${id}`, course)
   }
 
   delete(id: number): Observable<void> {

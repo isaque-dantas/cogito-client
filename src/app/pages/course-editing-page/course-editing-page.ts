@@ -1,12 +1,13 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {Header} from '../../components/header/header';
-import {FormArray, FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {CourseForm, CourseFormGroupWithId, CourseFormWithIds} from '../../interfaces/course';
-import {ModuleUpdateForm} from '../../interfaces/module';
-import {LessonForm} from '../../interfaces/lesson';
+import {ModuleFormGroupWithId} from '../../interfaces/module';
+import {LessonFormGroupWithId} from '../../interfaces/lesson';
 import {ModuleFormService} from '../../services/module-form-service';
 import {LessonFormService} from '../../services/lesson-form-service';
 import {CourseFormBasePage} from '../../components/course-form-base-page/course-form-base-page';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-course-editing-page',
@@ -20,16 +21,14 @@ import {CourseFormBasePage} from '../../components/course-form-base-page/course-
     './course-editing-page.css'
   ]
 })
-export class CourseEditingPage extends CourseFormBasePage implements OnInit{
+export class CourseEditingPage extends CourseFormBasePage implements OnInit {
   override formTitle = 'Editar curso'
   override submitButtonLabel = 'Confirmar alterações'
 
   private courseBeingEditedId: number | null = null;
-
-  private entitiesToBeUpdated!: {
-    course?: { title: string },
-    modules: { id: number, data: ModuleUpdateForm }[],
-    lessons: { id: number, data: LessonForm }[],
+  private entitiesToDelete: { modules: number[], lessons: number[] } = {
+    modules: [],
+    lessons: []
   }
 
   declare form: FormGroup<CourseFormGroupWithId>
@@ -45,7 +44,6 @@ export class CourseEditingPage extends CourseFormBasePage implements OnInit{
       this.courseService.getById(this.courseBeingEditedId).subscribe({
         next: course => {
           let courseForm: CourseFormWithIds = this.formService.getFormFromInstance(course)
-          console.log(courseForm)
           courseForm = this.formService.addUrlPrefixToVideoIds(courseForm)
 
           this.form = this.formService.courseEditingGroupFactory(
@@ -53,26 +51,61 @@ export class CourseEditingPage extends CourseFormBasePage implements OnInit{
             course.modules.map(m => m.lessons.length)
           )
 
+          this.form.valueChanges.subscribe(() => {
+            console.log(this.form.controls.modules.at(0).controls.lessons.controls.map(l => l.dirty))
+            console.log(this.form.controls.modules.at(0).controls.lessons.controls.map(l => l.value.id))
+            console.log(this.form.controls.modules.at(0).controls.lessons.controls.map(l => l.value.position))
+          })
+
           this.form.setValue(courseForm)
+        },
+        error: (err: HttpErrorResponse) => {
+          if (err.status === 404) {
+            this.alertService.error(`Não foi encontrado um curso com o ID ${this.courseBeingEditedId}.`)
+            this.router.navigateByUrl("/").then()
+          }
         }
       })
     })
   }
 
+  override addModule() {
+    this.form.controls.modules.push(
+      this.formService.moduleGroupFactory(1, true) as FormGroup<ModuleFormGroupWithId>
+    )
+  }
+
+  override addLesson(moduleIndex: number) {
+    this.form.controls.modules.at(moduleIndex).controls.lessons.push(
+      this.formService.lessonGroupFactory(true) as FormGroup<LessonFormGroupWithId>
+    )
+  }
+
   override sendFormToServer(courseForm: CourseForm) {
     if (!this.courseBeingEditedId) return;
 
-    // this.entitiesToBeUpdated = this.formService.getEntitiesToBeUpdated(this.form as FormGroup)
-    //
-    // this.entitiesToBeUpdated.modules.forEach((m) => this.moduleFormService.sendUpdateRequestAndAlertAccordingToResponse(m))
-    // this.entitiesToBeUpdated.lessons.forEach((l) => this.lessonFormService.sendUpdateRequestAndAlertAccordingToResponse(l))
+    const entitiesToAdd = this.formService.getEntitiesToBeAdded(this.form)
+    entitiesToAdd.modules.forEach((moduleData) => this.moduleFormService.handleAdd(moduleData))
+    entitiesToAdd.lessons.forEach((lessonData) => this.lessonFormService.handleAdd(lessonData))
 
-    this.courseService.edit(courseForm, this.courseBeingEditedId).subscribe({
-      next: () => {
-        this.alertService.success(`Curso editado com sucesso.`)
-        this.router.navigateByUrl('/')
-      },
-      error: this.handleFormError.bind(this),
-    })
+    const entitiesToUpdate = this.formService.getEntitiesToBeUpdated(this.form)
+    entitiesToUpdate.modules.forEach((moduleData) => this.moduleFormService.handleUpdate(moduleData))
+    entitiesToUpdate.lessons.forEach((lessonData) => this.lessonFormService.handleUpdate(lessonData))
+
+    this.formService.updateCourseTitle(this.form, courseForm.title)
+  }
+
+  override beforeRemovingModule(moduleIndex: number) {
+    const moduleBeingRemoved = this.form.controls.modules.at(moduleIndex)
+    if (!moduleBeingRemoved.value.id) return;
+
+    this.entitiesToDelete.modules.push(moduleBeingRemoved.value.id)
+  }
+
+  override beforeRemovingLesson(moduleIndex: number, lessonIndex: number) {
+    const lessonBeingRemoved = this.form.controls.modules.at(moduleIndex).controls.lessons.at(lessonIndex)
+    if (!lessonBeingRemoved.value.id) return;
+
+    this.entitiesToDelete.lessons.push(lessonBeingRemoved.value.id)
   }
 }

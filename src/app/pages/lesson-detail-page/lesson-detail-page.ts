@@ -14,13 +14,17 @@ import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {AlertService} from '../../services/alert';
 import {YouTubePlayer} from '@angular/youtube-player';
 import {HttpErrorResponse} from '@angular/common/http';
+import {ModuleTitlePipe} from '../../pipes/module-title-pipe';
+import {LessonTitlePipe} from '../../pipes/lesson-title-pipe';
 
 @Component({
   selector: 'app-lesson-detail-page',
   imports: [
     Header,
     YouTubePlayer,
-    RouterLink
+    RouterLink,
+    ModuleTitlePipe,
+    LessonTitlePipe
   ],
   templateUrl: './lesson-detail-page.html',
   styleUrl: './lesson-detail-page.css'
@@ -80,16 +84,11 @@ export class LessonDetailPage implements OnInit {
     this.changeDetectorRef.detectChanges();
 
     const videoWrapperElement: Element = this.elementRef.nativeElement.querySelector(`#${this.videoWrapperId}`);
-    if (!videoWrapperElement) {
-      console.log('videoWrapperElement not existent', videoWrapperElement)
-      return
-    }
+    if (!videoWrapperElement) return;
 
-    const width = videoWrapperElement.clientWidth
-    Promise.resolve().then(() => {
-      this.videoWrapperWidth = width
-      this.videoWrapperHeight = width * 9 / 16
-    })
+    const height = videoWrapperElement.clientHeight
+    this.videoWrapperWidth = height * 16 / 9
+    this.videoWrapperHeight = height
   }
 
   goToPreviousLesson() {
@@ -98,12 +97,7 @@ export class LessonDetailPage implements OnInit {
   }
 
   goToNextLesson() {
-    if (this.lesson?.position_related_to_course === LessonPositionRelatedToCourse.LAST) {
-      console.log(this.lesson.position_related_to_course)
-      return;
-    }
-
-    console.log(`/curso/${this.parentCourseId}/aula/${this.lesson?.next_lesson_id}`)
+    if (this.lesson?.position_related_to_course === LessonPositionRelatedToCourse.LAST) return;
     this.router.navigateByUrl(`/curso/${this.parentCourseId}/aula/${this.lesson?.next_lesson_id}`)
   }
 

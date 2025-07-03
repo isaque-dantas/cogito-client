@@ -8,12 +8,16 @@ import {AlertService} from '../../services/alert';
 import {HttpErrorResponse} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CourseFormBasePageInterface} from '../../interfaces/course-form-base-page';
+import {NgxMaskDirective} from 'ngx-mask';
+import {ModuleForm} from '../../interfaces/module';
+import {LessonForm} from '../../interfaces/lesson';
 
 @Component({
   selector: 'app-course-form-base-page',
   imports: [
     Header,
     ReactiveFormsModule,
+    NgxMaskDirective,
   ],
   templateUrl: './course-form-base-page.html',
   styleUrl: './course-form-base-page.css'
@@ -28,11 +32,10 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
   formTitle!: string
 
   formService = inject(CourseFormService)
-
   form!: FormGroup
 
   get modules() {
-    return (this.form.controls as {modules: FormArray<FormGroup>}).modules
+    return (this.form.controls as { modules: FormArray<FormGroup> }).modules
   }
 
   addModule() {
@@ -43,19 +46,19 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
     (this.modules.at(moduleIndex).controls as any).lessons.push(this.formService.lessonGroupFactory())
   }
 
-  removeModule(moduleIndex: number, beforeRemovingCallback?: () => void) {
+  removeModule(moduleIndex: number) {
     if (this.modules.length == 1) return;
 
-    if (beforeRemovingCallback) beforeRemovingCallback()
+    this.beforeRemovingModule(moduleIndex)
     this.modules.removeAt(moduleIndex);
   }
 
-  removeLesson(moduleIndex: number, lessonIndex: number, beforeRemovingCallback?: () => void) {
+  removeLesson(moduleIndex: number, lessonIndex: number) {
     const lessons = (this.modules.at(moduleIndex).controls as any).lessons
 
     if (lessons.length == 1) return;
 
-    if (beforeRemovingCallback) beforeRemovingCallback()
+    this.beforeRemovingLesson(moduleIndex, lessonIndex)
     lessons.removeAt(lessonIndex)
   }
 
@@ -81,5 +84,7 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
     this.alertService.error(message)
   }
 
-  sendFormToServer(courseForm: CourseForm): void {};
+  sendFormToServer(courseForm: CourseForm): void { }
+  beforeRemovingModule(moduleIndex: number) { }
+  beforeRemovingLesson(moduleIndex: number, lessonIndex: number) { }
 }

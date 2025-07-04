@@ -1,6 +1,6 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {NgOptimizedImage} from '@angular/common';
-import {RouterLink} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {AuthService} from '../../services/auth.service';
 
 @Component({
@@ -12,11 +12,11 @@ import {AuthService} from '../../services/auth.service';
   ],
   templateUrl: './header.html',
 })
-export class Header implements OnInit {
-  isUserLogged: boolean = false;
+export class Header {
   authService = inject(AuthService)
+  router = inject(Router)
 
-  ngOnInit() {
-    this.isUserLogged = this.authService.isAuthenticated()
+  logout() {
+    this.router.navigateByUrl("login").then(() => this.authService.logout())
   }
 }

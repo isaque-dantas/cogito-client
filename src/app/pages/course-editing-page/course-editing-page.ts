@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit, TemplateRef} from '@angular/core';
 import {Header} from '../../components/header/header';
 import {FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {CourseForm, CourseFormGroupWithId, CourseFormWithIds} from '../../interfaces/course';
@@ -23,7 +23,7 @@ import {HttpErrorResponse} from '@angular/common/http';
 })
 export class CourseEditingPage extends CourseFormBasePage implements OnInit {
   override formTitle = 'Editar curso'
-  override submitButtonLabel = 'Confirmar alterações'
+  override submitButtonLabel = 'Salvar alterações'
 
   private courseBeingEditedId: number | null = null;
   private entitiesToDelete: { modules: number[], lessons: number[] } = {
@@ -51,13 +51,8 @@ export class CourseEditingPage extends CourseFormBasePage implements OnInit {
             course.modules.map(m => m.lessons.length)
           )
 
-          this.form.valueChanges.subscribe(() => {
-            console.log(this.form.controls.modules.at(0).controls.lessons.controls.map(l => l.dirty))
-            console.log(this.form.controls.modules.at(0).controls.lessons.controls.map(l => l.value.id))
-            console.log(this.form.controls.modules.at(0).controls.lessons.controls.map(l => l.value.position))
-          })
-
           this.form.setValue(courseForm)
+          this.form.valueChanges.subscribe(() => this.areThereAnyPendingChanges = true)
         },
         error: (err: HttpErrorResponse) => {
           if (err.status === 404) {
@@ -84,6 +79,9 @@ export class CourseEditingPage extends CourseFormBasePage implements OnInit {
   override sendFormToServer(courseForm: CourseForm) {
     if (!this.courseBeingEditedId) return;
 
+    const formWithFilledPositions = this.formService.fillPositionsInForm(this.form)
+    this.form.setValue(formWithFilledPositions)
+
     const entitiesToAdd = this.formService.getEntitiesToBeAdded(this.form)
     entitiesToAdd.modules.forEach((moduleData) => this.moduleFormService.handleAdd(moduleData))
     entitiesToAdd.lessons.forEach((lessonData) => this.lessonFormService.handleAdd(lessonData))
@@ -92,7 +90,16 @@ export class CourseEditingPage extends CourseFormBasePage implements OnInit {
     entitiesToUpdate.modules.forEach((moduleData) => this.moduleFormService.handleUpdate(moduleData))
     entitiesToUpdate.lessons.forEach((lessonData) => this.lessonFormService.handleUpdate(lessonData))
 
+    this.entitiesToDelete.modules.forEach(moduleId => this.moduleFormService.handleDelete(moduleId))
+    this.entitiesToDelete.lessons.forEach(lessonId => this.lessonFormService.handleDelete(lessonId))
+
     this.formService.updateCourseTitle(this.form, courseForm.title)
+
+    if (!this.form.dirty && this.entitiesToDelete.modules.length === 0 && this.entitiesToDelete.lessons.length === 0) {
+      this.alertService.info("Não há alterações a serem aplicadas.")
+    }
+
+    this.areThereAnyPendingChanges = false
   }
 
   override beforeRemovingModule(moduleIndex: number) {

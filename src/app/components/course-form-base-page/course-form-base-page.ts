@@ -11,6 +11,7 @@ import {CourseFormBasePageInterface} from '../../interfaces/course-form-base-pag
 import {NgxMaskDirective} from 'ngx-mask';
 import {ModuleForm} from '../../interfaces/module';
 import {LessonForm} from '../../interfaces/lesson';
+import {NgTemplateOutlet} from '@angular/common';
 
 @Component({
   selector: 'app-course-form-base-page',
@@ -18,6 +19,7 @@ import {LessonForm} from '../../interfaces/lesson';
     Header,
     ReactiveFormsModule,
     NgxMaskDirective,
+    NgTemplateOutlet,
   ],
   templateUrl: './course-form-base-page.html',
   styleUrl: './course-form-base-page.css'
@@ -33,6 +35,8 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
 
   formService = inject(CourseFormService)
   form!: FormGroup
+
+  areThereAnyPendingChanges = false
 
   get modules() {
     return (this.form.controls as { modules: FormArray<FormGroup> }).modules

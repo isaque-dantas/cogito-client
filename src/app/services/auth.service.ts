@@ -28,6 +28,7 @@ export class AuthService {
 
     const decodedTokenPayload = this.getPayloadFromToken(authToken.access)
     localStorage.setItem("role", decodedTokenPayload.role);
+    localStorage.setItem("name", decodedTokenPayload.name);
     localStorage.setItem("access", authToken.access);
     return authToken
   }
@@ -73,7 +74,7 @@ export class AuthService {
     return "Bearer " + localStorage.getItem('access')!
   }
 
-  getPayloadFromToken(token: string): {email: string, role: string, exp: number} {
+  getPayloadFromToken(token: string): {email: string, name: string, role: string, exp: number} {
     const encodedTokenPayload = token.split('.')[1]
     return JSON.parse(atob(encodedTokenPayload))
   }
@@ -83,5 +84,11 @@ export class AuthService {
     const storedUserRole = localStorage.getItem("role")
 
     return storedUserRole == UserRoles.coordinator
+  }
+
+  getLoggedUserName() {
+    if (!this.isBrowser) return;
+
+    return localStorage.getItem("name");
   }
 }

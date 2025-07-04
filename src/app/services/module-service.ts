@@ -16,4 +16,8 @@ export class ModuleService {
   update(id: number, updateData: ModuleUpdateForm) {
     return this.http.put<void>(`${API_BASE_URL}/module/${id}`, updateData)
   }
+
+  delete(id: number) {
+    return this.http.delete<void>(`${API_BASE_URL}/module/${id}`)
+  }
 }

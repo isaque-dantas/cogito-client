@@ -2,16 +2,17 @@
 <main class="p-20">
   @if (form) {
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <div class="flex flex-col gap-10 max-w-3xl">
+      <div class="flex flex-col gap-10 max-w-4xl">
         <div class="flex flex-col gap-6">
           <h1 class="font-bold text-4xl text-secondary">
             {{ formTitle }}
           </h1>
+          <!--          <ng-container *ngTemplateOutlet=""></ng-container>-->
           <div class="form-control">
             <label for="title">Título*</label>
             <input id="title" type="text" placeholder="Título" formControlName="title" class="">
             @if (form.get('title')!.dirty && form.get('title')!.getError('required')) {
-              <span class="error-message">Este campo é obrigatório.</span>
+              <p class="error-message">Este campo é obrigatório.</p>
             }
           </div>
         </div>
@@ -31,11 +32,6 @@
                 <span class="text-gray-500">Módulo #{{ moduleIndex + 1 }}</span>
                 <div [formGroupName]="moduleIndex"
                      class="flex flex-col gap-2 rounded-2xl border border-gray-300 p-6 bg-sky-50/50 relative">
-
-                  @if (module.get('position')) {
-                    <input type="text" class="invisible" formControlName="position" [value]="moduleIndex">
-                  }
-
                   <div class="form-control">
                     <label for="module-title-{{moduleIndex}}">Título*</label>
                     <div class="input-wrapper">
@@ -50,7 +46,7 @@
                       >
                     </div>
                     @if (module.get('title')!.dirty && module.get('title')!.getError('required')) {
-                      <span class="error-message">Este campo é obrigatório.</span>
+                      <p class="error-message">Este campo é obrigatório.</p>
                     }
                   </div>
                   <div class="flex flex-col gap-10 mt-6">
@@ -67,16 +63,6 @@
                       @for (lesson of formService.getLessonsFromModule(module); let
                         lessonIndex = $index; track lessonIndex) {
                         <ng-container [formGroupName]="lessonIndex">
-                          @if (lesson.get('position')) {
-                            {{ lessonIndex }}
-                            <input
-                              id="lesson-position-{{moduleIndex}}-{{lessonIndex}}"
-                              type="text"
-                              class="absolute invisible pointer-events-none"
-                              formControlName="position"
-                              [value]="lessonIndex">
-                          }
-
                           <div class="flex flex-col gap-4 rounded-lg border border-gray-300 p-4 relative pr-8">
                             <div class="form-control">
                               <label for="lesson-title-{{moduleIndex}}-{{lessonIndex}}">Título*</label>
@@ -93,7 +79,7 @@
                                 >
                               </div>
                               @if (lesson.get('title')!.dirty && lesson.get('title')!.getError('required')) {
-                                <span class="error-message">Este campo é obrigatório.</span>
+                                <p class="error-message">Este campo é obrigatório.</p>
                               }
                             </div>
                             <div class="form-control">
@@ -107,16 +93,18 @@
                               >
                               @if (lesson.get('video_link')!.dirty) {
                                 @if (lesson.get('video_link')!.getError('required')) {
-                                  <span class="error-message">Este campo é obrigatório.</span>
+                                  <p class="error-message">Este campo é obrigatório.</p>
                                 }
                                 @if (lesson.get('video_link')!.getError('hasNoVideoId')) {
-                                  <span
-                                    class="error-message flex flex-col gap-1"><span>O link não possui um ID.</span> <span
-                                    class="text-gray-500 text-sm">Exemplo de formato válido: https://www.youtube.com/watch?v=OIuG1bBkfs0</span>
-                                </span>
+                                  <p
+                                    class="error-message flex flex-col gap-1"><span>O link não possui um identificador válido, que é composto pelos caracteres após "v=", no próprio link.</span>
+                                    <span class="text-gray-500 text-sm">
+                                      Exemplo de formato válido: https://www.youtube.com/watch?v=<span class="font-bold">OIuG1bBkfs0</span>
+                                    </span>
+                                  </p>
                                 }
                                 @if (lesson.get('video_link')!.getError('doesNotExist')) {
-                                  <span class="error-message flex flex-col gap-1">O link não existe.</span>
+                                  <p class="error-message flex flex-col gap-1">O link não existe.</p>
                                 }
                               }
                             </div>
@@ -145,14 +133,28 @@
 
           </div>
         </div>
-        <button
-          [disabled]="form.invalid"
-          type="submit"
-          class="font-bold text-2xl text-secondary flex gap-2 items-center px-8 py-2 rounded-lg border-2 border-secondary w-fit hover:bg-secondary hover:text-white transition-all cursor-pointer disabled:text-gray-600 disabled:border-gray-600 disabled:cursor-not-allowed disabled:hover:bg-gray-100 disabled:bg-gray-100"
-        >
-          <span>{{ submitButtonLabel }}</span>
-          <span class="material-symbols-outlined text-2xl!">check</span>
-        </button>
+        <div
+          class="fixed bottom-0 left-0 py-4 pl-20 pr-4 rounded-tr-xl bg-white/50 backdrop-blur-xl flex gap-4 items-center">
+          <button
+            [disabled]="form.invalid"
+            type="submit"
+            class="font-bold text-xl text-secondary flex gap-2 items-center px-4 py-1 rounded-lg border-2 border-secondary w-fit hover:bg-secondary hover:text-white transition-all cursor-pointer disabled:text-gray-600 disabled:border-gray-600 disabled:cursor-not-allowed disabled:hover:bg-gray-100 disabled:bg-gray-100"
+          >
+            <span>{{ submitButtonLabel }}</span>
+            <span class="material-symbols-outlined text-2xl!">check</span>
+          </button>
+          @if (this.submitButtonLabel === "Salvar alterações") {
+            @if (areThereAnyPendingChanges) {
+              <p class="max-w-40 italic text-red-800 leading-none">
+                Há alterações não salvas.
+              </p>
+            } @else {
+              <p class="max-w-40 italic text-gray-500 leading-none">
+                Todas as alterações estão salvas.
+              </p>
+            }
+          }
+        </div>
       </div>
     </form>
   }

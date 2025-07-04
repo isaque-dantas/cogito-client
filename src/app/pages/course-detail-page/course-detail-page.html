@@ -24,7 +24,7 @@
             }
 
             @if (authService.isLoggedUserCoordinator()) {
-              @if (!course.is_subscribed) {
+              @if (!course.is_subscribed || (course.is_subscribed && course.has_user_finished)) {
                 <div class="w-1 h-1 bg-gray-500 rounded-full mr-6"></div>
               }
               <a routerLink="/curso/{{course.id}}/editar"
@@ -57,9 +57,16 @@
           </div>
         }
 
-        <div>
+        @if (!course.is_subscribed && !authService.isLoggedUserCoordinator()) {
+          <p class="mt-6 text-lg italic text-gray-500 max-w-120">As aulas estão bloqueadas porque você não está
+            inscrito(a) neste curso.
 
-        </div>
+            @if (!authService.isAuthenticated()) {
+              <a routerLink="/login" class="underline underline-offset-2">Faça login</a> e tente
+                novamente.
+            }
+          </p>
+        }
 
         <div class="flex flex-col gap-12 mt-6">
           @for (module of course.modules; track module.id) {
@@ -69,7 +76,7 @@
                 @for (lesson of module.lessons; track lesson.id) {
                   @switch (lesson.status) {
                     @case (LessonStatus.LOCKED) {
-                      <li class="lesson-item border-gray-500 text-gray-500">
+                      <li class="lesson-item border-gray-500 text-gray-500 locked">
                         <span class="material-symbols-outlined text-[16px]!">lock</span>
                         <p class="w-full">{{ lesson | lessonTitle }}</p>
                       </li>

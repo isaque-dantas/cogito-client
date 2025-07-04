@@ -24,4 +24,11 @@ export class ModuleFormService {
       error: () => this.alertService.error(`Ocorreu um erro ao adicionar o módulo '${moduleData.title}'. Tente novamente`),
     })
   }
+
+  handleDelete(moduleId: number) {
+    this.moduleService.delete(moduleId).subscribe({
+      next: () => this.alertService.success(`O módulo #${moduleId} foi excluído com sucesso.`),
+      error: () => this.alertService.error(`Ocorreu um erro ao excluir o módulo #${moduleId}. Tente novamente`),
+    })
+  }
 }

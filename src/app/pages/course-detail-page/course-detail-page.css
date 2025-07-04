@@ -1,10 +1,18 @@
 @reference '../../../styles.css';
 
 .lesson-item {
-  @apply p-2 w-full border rounded-lg flex gap-2 items-center relative transition-all cursor-pointer;
+  @apply p-2 w-full border rounded-lg flex gap-2 items-center relative;
 }
 
-.lesson-item:hover {
+.lesson-item.locked {
+  @apply cursor-not-allowed select-none;
+}
+
+.lesson-item:not(.locked) {
+  @apply transition-all cursor-pointer;
+}
+
+.lesson-item:not(.locked):hover {
   @apply ring-1 scale-[101%];
 }
 

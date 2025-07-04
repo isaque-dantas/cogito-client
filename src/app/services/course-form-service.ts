@@ -250,13 +250,13 @@ export class CourseFormService {
       data: {
         title: l.value.title!,
         position: l.value.position!,
-        video_link: l.value.video_link!
+        video_link: this.getVideoIdFromRawUrl(l.value.video_link!)!
       }
     })
 
     const lessonNestedFormMapper = (l: FormGroup<LessonFormGroupWithId>): LessonNestedForm => ({
       title: l.value.title!,
-      video_link: l.value.video_link!
+      video_link: this.getVideoIdFromRawUrl(l.value.video_link!)!
     })
 
     const moduleMapper = (m: FormGroup<ModuleFormGroupWithId>): ModuleForm => ({
@@ -289,5 +289,18 @@ export class CourseFormService {
     }
 
     return allLessonGroups
+  }
+
+  fillPositionsInForm(form: FormGroup<CourseFormGroupWithId>): CourseFormWithIds {
+    const lessonMapper =
+      (l: LessonNestedFormWithIds, index: number): LessonNestedFormWithIds => ({...l, position: index})
+    const moduleMapper =
+      (m: ModuleNestedFormWithIds, index: number): ModuleNestedFormWithIds => ({...m, position: index, lessons: m.lessons.map(lessonMapper)})
+
+    return {
+      id: form.value.id!,
+      title: form.value.title!,
+      modules: (form.value.modules! as ModuleNestedFormWithIds[]).map(moduleMapper)
+    }
   }
 }

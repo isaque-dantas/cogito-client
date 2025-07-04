@@ -21,4 +21,8 @@ export class LessonService {
   update(id: number, updateData: LessonUpdateForm) {
     return this.http.put<void>(`${API_BASE_URL}/lesson/${id}`, updateData)
   }
+
+  delete(id: number) {
+    return this.http.delete<void>(`${API_BASE_URL}/lesson/${id}`)
+  }
 }

@@ -2,12 +2,30 @@
   <figure routerLink="/" class="cursor-pointer">
     <img ngSrc="/cogito-logo-gradient.png" alt="" width="134" height="54" priority>
   </figure>
-  @if (!isUserLogged) {
-
+  @if (authService.isAuthenticated()) {
+    <nav class="flex gap-12 items-center">
+      <ul class="flex gap-6 items-center">
+        <li><a routerLink="/"
+               class="font-bold text-secondary cursor-pointer hover:underline underline-offset-2">Início</a></li>
+        <li>
+          <button
+            (click)="logout()"
+            type="button"
+            class="px-2 py-0.5 border-2 border-secondary text-secondary rounded-lg font-semibold cursor-pointer">
+            Sair
+          </button>
+        </li>
+        <li class="flex gap-2 items-center border border-tertiary rounded-sm px-2 py-1 ml-4">
+          <input type="text" placeholder="Pesquisar cursos" class="placeholder:text-gray-400 outline-0 ">
+          <span class="material-symbols-outlined">search</span>
+        </li>
+      </ul>
+    </nav>
+  } @else {
     <nav class="flex gap-12 items-center">
       <ul class="flex gap-6 items-center">
         <li class="font-bold text-secondary cursor-pointer hover:underline underline-offset-2"><a routerLink="/">Início</a></li>
-        <li class="flex gap-2 items-center border border-tertiary rounded-sm px-2 py-1">
+        <li class="flex gap-2 items-center border border-tertiary rounded-lg px-2 py-1">
           <input type="text" placeholder="Pesquisar cursos" class="placeholder:text-gray-400 outline-0 ">
           <span class="material-symbols-outlined">search</span>
         </li>
@@ -19,20 +37,6 @@
            class="px-6 py-1 border-2 bg-primary text-white rounded-lg font-bold">Fazer cadastro</a>
       </div>
     </nav>
-
-  } @else {
-
-    <nav class="flex gap-12 items-center">
-      <ul class="flex gap-6 items-center">
-        <li class="font-bold text-secondary cursor-pointer hover:underline underline-offset-2">Início</li>
-        <li class="font-bold text-secondary cursor-pointer hover:underline underline-offset-2">Perfil</li>
-        <li class="flex gap-2 items-center border border-tertiary rounded-sm px-2 py-1">
-          <input type="text" placeholder="Pesquisar cursos" class="placeholder:text-gray-400 outline-0 ">
-          <span class="material-symbols-outlined">search</span>
-        </li>
-      </ul>
-    </nav>
-
   }
 
 </header>

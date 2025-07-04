@@ -1,48 +1,86 @@
 <app-header/>
-<main class="my-20 flex flex-col gap-10 px-20">
-  <h1 class="font-bold text-4xl text-secondary">Cursos disponíveis</h1>
-
+<main class="my-20 flex flex-col gap-4 px-20">
   <div class="flex gap-8">
-    <a routerLink="/curso/adicionar" class="font-bold text-secondary text-xl flex gap-2 items-center border-2 border-secondary rounded-lg px-6 py-2 hover:bg-secondary hover:text-white transition-all">
-      <span>Adicionar curso</span>
-      <span class="material-symbols-outlined text-2xl">add</span>
-    </a>
-    <div class="flex gap-2 items-center border border-tertiary rounded-sm px-4 py-1 max-w-sm">
-      <input type="text" placeholder="Pesquisar cursos" class="placeholder:text-gray-400 outline-0 text-xl w-full">
-      <span class="material-symbols-outlined">search</span>
+    @if (authService.isLoggedUserCoordinator()) {
+      <a routerLink="/curso/adicionar"
+         class="font-bold text-secondary text-xl flex gap-2 items-center border-2 border-secondary rounded-lg px-6 py-2 hover:bg-secondary hover:text-white transition-all">
+        <span>Adicionar curso</span>
+        <span class="material-symbols-outlined text-2xl">add</span>
+      </a>
+    }
+    <div class="flex gap-4 items-center">
+      <div class="flex gap-2 items-center border border-tertiary rounded-lg pl-4 pr-2 py-1 max-w-sm">
+        <input
+          [formControl]="courseSearchFormControl"
+          type="text"
+          placeholder="Pesquisar cursos"
+          class="placeholder:text-gray-400 outline-0 text-xl w-full">
+        <span class="material-symbols-outlined">search</span>
+      </div>
+      <button
+        [disabled]="courseSearchFormControl.invalid"
+        (click)="searchCoursesMatching(courseSearchFormControl.value)"
+        type="button"
+        class="border-2 border-secondary text-secondary rounded-lg px-4 py-1 cursor-pointer not-disabled:hover:bg-secondary not-disabled:hover:text-white transition-all font-bold disabled:text-gray-500 disabled:border-gray-500 disabled:cursor-not-allowed"
+      >
+        Pesquisar
+      </button>
     </div>
+
   </div>
 
   @if (courses$ | async; as courses) {
-    <ul class="grid grid-cols-4 gap-6">
-      @if (courses.length > 0) {
-        @for (course of courses; track course.id) {
-          <li>
-            <app-course-card [course]="course"></app-course-card>
-          </li>
-        }
-      } @else {
-        <li>Não foram encontrados cursos.</li>
-      }
-    </ul>
-
-    <div class="flex flex-col gap-6 mt-16">
-      <h3 class="font-bold text-3xl text-secondary">Meus cursos</h3>
+    <div class="mt-16">
+      <h3 class="font-bold text-3xl text-secondary mb-6">Cursos disponíveis</h3>
       <ul class="grid grid-cols-4 gap-6">
-        @if (isUserSubscribedInAtLeastOneCourse(courses)) {
+        @if (courses.length > 0) {
           @for (course of courses; track course.id) {
-            @if (course.is_subscribed) {
-              <li>
-                <app-course-card [course]="course"/>
-              </li>
-            }
+            <li>
+              <app-course-card [course]="course"></app-course-card>
+            </li>
           }
         } @else {
-          <li>Você não está inscrito em nenhum curso.</li>
+          <li>Não foram encontrados cursos.</li>
         }
       </ul>
     </div>
+
+    @if (authService.isAuthenticated()) {
+      <div class="flex flex-col gap-6 mt-16">
+        <h3 class="font-bold text-3xl text-secondary">Cursos em andamento</h3>
+        <ul class="grid grid-cols-4 gap-6">
+          @if (isUserStillDoingInAtLeastOneCourse(courses)) {
+            @for (course of courses; track course.id) {
+              @if (course.is_subscribed && !course.has_user_finished) {
+                <li>
+                  <app-course-card [course]="course"/>
+                </li>
+              }
+            }
+          } @else {
+            <li>Você não está realizando nenhum curso no momento.</li>
+          }
+        </ul>
+      </div>
+
+      <div class="flex flex-col gap-6 mt-16">
+        <h3 class="font-bold text-3xl text-secondary">Cursos finalizados</h3>
+        <ul class="grid grid-cols-4 gap-6">
+          @if (hasUserFinishedAtLeastOneCourse(courses)) {
+            @for (course of courses; track course.id) {
+              @if (course.has_user_finished) {
+                <li>
+                  <app-course-card [course]="course"/>
+                </li>
+              }
+            }
+          } @else {
+            <li>Você não finalizou nenhum curso.</li>
+          }
+        </ul>
+      </div>
+    }
   } @else {
-    <li>Carregando...</li>
+    <p>Carregando...</p>
   }
 </main>

@@ -24,4 +24,11 @@ export class LessonFormService {
       error: () => this.alertService.error(`Ocorreu um erro ao adicionar a aula '${lessonData.data.title}'. Tente novamente.`)
     })
   }
+
+  handleDelete(id: number) {
+    this.lessonService.delete(id).subscribe({
+      next: () => this.alertService.success(`A aula #${id} foi excluída com sucesso.`),
+      error: () => this.alertService.error(`Ocorreu um erro ao excluir a aula #${id}. Tente novamente`),
+    })
+  }
 }

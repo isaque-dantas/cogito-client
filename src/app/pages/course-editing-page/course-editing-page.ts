@@ -16,10 +16,7 @@ import {HttpErrorResponse} from '@angular/common/http';
     ReactiveFormsModule
   ],
   templateUrl: '../../components/course-form-base-page/course-form-base-page.html',
-  styleUrls: [
-    '../../components/course-form-base-page/course-form-base-page.css',
-    './course-editing-page.css'
-  ]
+  styleUrl: '../../components/course-form-base-page/course-form-base-page.css',
 })
 export class CourseEditingPage extends CourseFormBasePage implements OnInit {
   override formTitle = 'Editar curso'
@@ -52,7 +49,7 @@ export class CourseEditingPage extends CourseFormBasePage implements OnInit {
           )
 
           this.form.setValue(courseForm)
-          this.form.valueChanges.subscribe(() => this.areThereAnyPendingChanges = true)
+          this.form.markAsPristine()
         },
         error: (err: HttpErrorResponse) => {
           if (err.status === 404) {
@@ -95,11 +92,9 @@ export class CourseEditingPage extends CourseFormBasePage implements OnInit {
 
     this.formService.updateCourseTitle(this.form, courseForm.title)
 
-    if (!this.form.dirty && this.entitiesToDelete.modules.length === 0 && this.entitiesToDelete.lessons.length === 0) {
+    if (!this.areThereAnyPendingChanges()) {
       this.alertService.info("Não há alterações a serem aplicadas.")
     }
-
-    this.areThereAnyPendingChanges = false
   }
 
   override beforeRemovingModule(moduleIndex: number) {
@@ -114,5 +109,15 @@ export class CourseEditingPage extends CourseFormBasePage implements OnInit {
     if (!lessonBeingRemoved.value.id) return;
 
     this.entitiesToDelete.lessons.push(lessonBeingRemoved.value.id)
+  }
+
+  override areThereAnyPendingChanges(): boolean {
+    return (
+      this.form.dirty
+      ||
+      this.entitiesToDelete.modules.length >= 1
+      ||
+      this.entitiesToDelete.lessons.length >= 1
+    )
   }
 }

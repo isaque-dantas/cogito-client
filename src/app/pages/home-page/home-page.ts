@@ -8,6 +8,7 @@ import {AsyncPipe} from '@angular/common';
 import {Router, RouterLink} from '@angular/router';
 import {AuthService} from '../../services/auth.service';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
+import {SearchForm} from '../../components/search-form/search-form';
 
 @Component({
   selector: 'app-home-page',
@@ -16,7 +17,8 @@ import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
     CourseCard,
     AsyncPipe,
     RouterLink,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SearchForm
   ],
   templateUrl: './home-page.html',
   styleUrl: './home-page.css'
@@ -27,14 +29,8 @@ export class HomePage implements OnInit {
   authService = inject(AuthService)
   router = inject(Router)
 
-  courseSearchFormControl!: FormControl<string | null>
-
   ngOnInit() {
-    this.courseSearchFormControl = new FormControl('', Validators.required)
-
     this.courses$ = this.courseService.getAll()
-    this.courseSearchFormControl.valueChanges.subscribe(console.log)
-    console.log(this.courseSearchFormControl.value)
   }
 
   isUserStillDoingInAtLeastOneCourse(courses: Course[]) {
@@ -45,8 +41,7 @@ export class HomePage implements OnInit {
     return courses.some(c => c.has_user_finished)
   }
 
-  searchCoursesMatching(value: string | null) {
-    if (!value) return;
-    this.router.navigate(["curso", "pesquisar"], {queryParams: {'q': value}})
+  goToSearchPageWithSearchQuery(searchQuery: string) {
+    this.router.navigate(['curso', 'pesquisar'], {queryParams: {q: searchQuery}})
   }
 }

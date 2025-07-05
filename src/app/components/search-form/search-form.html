@@ -1,0 +1,19 @@
+<div class="flex gap-4 items-center layout-{{size()}}">
+  <div class="input-wrapper flex gap-2 items-center border border-tertiary rounded-lg max-w-sm">
+    <input
+      [formControl]="courseSearchFormControl"
+      (keydown)="handleInputKeyDown($event)"
+      type="text"
+      placeholder="Pesquisar cursos"
+      class="placeholder:text-gray-400 outline-0 text-xl w-full">
+    <span class="material-symbols-outlined">search</span>
+  </div>
+  <button
+    [disabled]="courseSearchFormControl.invalid"
+    (click)="updateSearchQuery()"
+    type="button"
+    class="border-2 border-secondary text-secondary rounded-lg  cursor-pointer not-disabled:hover:bg-secondary not-disabled:hover:text-white transition-all font-bold disabled:text-gray-500 disabled:border-gray-500 disabled:cursor-not-allowed"
+  >
+    Pesquisar
+  </button>
+</div>

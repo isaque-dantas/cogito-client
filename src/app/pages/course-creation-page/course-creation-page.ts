@@ -13,10 +13,7 @@ import {NgxMaskDirective} from 'ngx-mask';
     NgxMaskDirective
   ],
   templateUrl: '../../components/course-form-base-page/course-form-base-page.html',
-  styleUrls: [
-    '../../components/course-form-base-page/course-form-base-page.css',
-    './course-creation-page.css'
-  ]
+  styleUrl: '../../components/course-form-base-page/course-form-base-page.css',
 })
 export class CourseCreationPage extends CourseFormBasePage {
   override formTitle = 'Adicionar curso'

@@ -81,8 +81,8 @@ export class AuthService {
 
   isLoggedUserCoordinator(): boolean {
     if (!this.isBrowser || !this.isAuthenticated()) return false
-    const storedUserRole = localStorage.getItem("role")
 
+    const storedUserRole = localStorage.getItem("role")
     return storedUserRole == UserRoles.coordinator
   }
 

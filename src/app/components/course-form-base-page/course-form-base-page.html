@@ -4,14 +4,16 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="flex flex-col gap-10 max-w-4xl">
         <div class="flex flex-col gap-6">
-          <h1 class="font-bold text-4xl text-secondary">
-            {{ formTitle }}
-          </h1>
+          <h1 class="font-bold text-4xl text-secondary">{{ formTitle }}</h1>
           <!--          <ng-container *ngTemplateOutlet=""></ng-container>-->
-          <div class="form-control">
+          <div class="form-control" [class.invalid]="form.get('title')!.invalid">
             <label for="title">Título*</label>
-            <input id="title" type="text" placeholder="Título" formControlName="title" class="">
-            @if (form.get('title')!.dirty && form.get('title')!.getError('required')) {
+            <input
+              id="title"
+              type="text"
+              placeholder="Título"
+              formControlName="title">
+            @if (form.get('title')!.getError('required')) {
               <p class="error-message">Este campo é obrigatório.</p>
             }
           </div>
@@ -32,7 +34,8 @@
                 <span class="text-gray-500">Módulo #{{ moduleIndex + 1 }}</span>
                 <div [formGroupName]="moduleIndex"
                      class="flex flex-col gap-2 rounded-2xl border border-gray-300 p-6 bg-sky-50/50 relative">
-                  <div class="form-control">
+
+                  <div class="form-control" [class.invalid]="module.get('title')!.invalid">
                     <label for="module-title-{{moduleIndex}}">Título*</label>
                     <div class="input-wrapper">
                       <label for="module-title-{{moduleIndex}}"
@@ -45,10 +48,11 @@
                         [value]="module.value.title"
                       >
                     </div>
-                    @if (module.get('title')!.dirty && module.get('title')!.getError('required')) {
+                    @if (module.get('title')!.getError('required')) {
                       <p class="error-message">Este campo é obrigatório.</p>
                     }
                   </div>
+
                   <div class="flex flex-col gap-10 mt-6">
                     <div class="flex gap-4 items-center">
                       <h5 class="font-bold text-secondary text-2xl">Aulas</h5>
@@ -64,12 +68,13 @@
                         lessonIndex = $index; track lessonIndex) {
                         <ng-container [formGroupName]="lessonIndex">
                           <div class="flex flex-col gap-4 rounded-lg border border-gray-300 p-4 relative pr-8">
-                            <div class="form-control">
+                            <div class="form-control" [class.invalid]="lesson.controls.title.invalid">
                               <label for="lesson-title-{{moduleIndex}}-{{lessonIndex}}">Título*</label>
                               <div class="input-wrapper">
-                                <label for="lesson-title-{{moduleIndex}}-{{lessonIndex}}"
-                                       class="text-secondary w-fit leading-none text-lg">Aula {{ lessonIndex + 1 }}
-                                  -</label>
+                                <label
+                                  for="lesson-title-{{moduleIndex}}-{{lessonIndex}}"
+                                  class="text-secondary w-fit leading-none text-lg">Aula {{ lessonIndex + 1 }} -
+                                </label>
                                 <input
                                   id="lesson-title-{{moduleIndex}}-{{lessonIndex}}"
                                   type="text"
@@ -78,11 +83,11 @@
                                   [value]="lesson.value.title"
                                 >
                               </div>
-                              @if (lesson.get('title')!.dirty && lesson.get('title')!.getError('required')) {
+                              @if (lesson.get('title')!.getError('required')) {
                                 <p class="error-message">Este campo é obrigatório.</p>
                               }
                             </div>
-                            <div class="form-control">
+                            <div class="form-control" [class.invalid]="lesson.controls.video_link.invalid">
                               <label for="lesson-video-link-{{moduleIndex}}-{{lessonIndex}}">Link do vídeo*</label>
                               <input
                                 id="lesson-video-link-{{moduleIndex}}-{{lessonIndex}}"
@@ -91,21 +96,20 @@
                                 formControlName="video_link"
                                 [value]="lesson.value.video_link"
                               >
-                              @if (lesson.get('video_link')!.dirty) {
-                                @if (lesson.get('video_link')!.getError('required')) {
-                                  <p class="error-message">Este campo é obrigatório.</p>
-                                }
-                                @if (lesson.get('video_link')!.getError('hasNoVideoId')) {
-                                  <p
-                                    class="error-message flex flex-col gap-1"><span>O link não possui um identificador válido, que é composto pelos caracteres após "v=", no próprio link.</span>
-                                    <span class="text-gray-500 text-sm">
-                                      Exemplo de formato válido: https://www.youtube.com/watch?v=<span class="font-bold">OIuG1bBkfs0</span>
+                              @if (lesson.get('video_link')!.getError('required')) {
+                                <p class="error-message">Este campo é obrigatório.</p>
+                              }
+                              @if (lesson.get('video_link')!.getError('hasNoVideoId')) {
+                                <p
+                                  class="error-message flex flex-col gap-1"><span>O link não possui um identificador válido, que é composto pelos caracteres após "v=", no próprio link.</span>
+                                  <span class="text-gray-500 text-sm">
+                                      Exemplo de formato válido: https://www.youtube.com/watch?v=<span
+                                    class="font-bold">OIuG1bBkfs0</span>
                                     </span>
-                                  </p>
-                                }
-                                @if (lesson.get('video_link')!.getError('doesNotExist')) {
-                                  <p class="error-message flex flex-col gap-1">O link não existe.</p>
-                                }
+                                </p>
+                              }
+                              @if (lesson.get('video_link')!.getError('doesNotExist')) {
+                                <p class="error-message flex flex-col gap-1">O vídeo informado não existe no YouTube. O link está correto?</p>
                               }
                             </div>
                             <button
@@ -144,7 +148,7 @@
             <span class="material-symbols-outlined text-2xl!">check</span>
           </button>
           @if (this.submitButtonLabel === "Salvar alterações") {
-            @if (areThereAnyPendingChanges) {
+            @if (areThereAnyPendingChanges()) {
               <p class="max-w-40 italic text-red-800 leading-none">
                 Há alterações não salvas.
               </p>

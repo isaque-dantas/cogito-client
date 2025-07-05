@@ -27,7 +27,6 @@ import {LessonTitlePipe} from '../../pipes/lesson-title-pipe';
     LessonTitlePipe
   ],
   templateUrl: './lesson-detail-page.html',
-  styleUrl: './lesson-detail-page.css'
 })
 export class LessonDetailPage implements OnInit {
   private activatedRoute = inject(ActivatedRoute);

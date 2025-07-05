@@ -1,1 +1,31 @@
-<p>search-page works!</p>
+<app-header></app-header>
+<main class="my-20 px-20">
+  <div class="mb-10">
+    <app-search-form
+      [searchQuery]="searchQuery()"
+      (searchQueryChanged)="searchCourses($event)">
+    </app-search-form>
+  </div>
+
+  @if (searchQuery()) {
+    <h1 class="text-4xl font-semibold text-secondary mb-8">Pesquisando cursos por "{{ searchQuery() }}"</h1>
+    @if (courses$ | async; as courses) {
+      @if (courses && courses.length != 0) {
+        <ul class="grid grid-cols-4 gap-6">
+          @for (course of courses; track course.id) {
+            <li>
+              <app-course-card [course]="course"></app-course-card>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p>Não há cursos que atendam a essa pesquisa.</p>
+      }
+    } @else {
+      <p>Carregando...</p>
+    }
+  } @else {
+    <p>Não há um texto de pesquisa.</p>
+  }
+
+</main>

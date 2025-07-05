@@ -1,0 +1,25 @@
+@reference '../../../styles.css';
+
+.layout-md .input-wrapper {
+  @apply pl-4 pr-2 py-1;
+}
+
+.layout-md input {
+  @apply text-xl;
+}
+
+.layout-md button {
+  @apply px-4 py-1;
+}
+
+.layout-sm .input-wrapper {
+  @apply pl-2 pr-1 py-1;
+}
+
+.layout-sm input {
+  @apply text-base;
+}
+
+.layout-sm button {
+  @apply px-2 py-0.5;
+}

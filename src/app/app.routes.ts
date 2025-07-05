@@ -7,14 +7,15 @@ import {LessonDetailPage} from './pages/lesson-detail-page/lesson-detail-page';
 import {CourseEditingPage} from './pages/course-editing-page/course-editing-page';
 import {CourseCreationPage} from './pages/course-creation-page/course-creation-page';
 import {SearchPage} from './pages/search-page/search-page';
+import {coordinatorOnlyGuard} from './auth/coordinator-only-guard';
 
 export const routes: Routes = [
   {path: '', component: HomePage},
   {path: 'cadastro', component: RegisterPage},
   {path: 'login', component: LoginPage},
-  {path: 'curso/adicionar', component: CourseCreationPage},
+  {path: 'curso/adicionar', component: CourseCreationPage, canActivate: [coordinatorOnlyGuard]},
   {path: 'curso/pesquisar', component: SearchPage},
   {path: 'curso/:id', component: CourseDetailPage},
-  {path: 'curso/:id/editar', component: CourseEditingPage},
+  {path: 'curso/:id/editar', component: CourseEditingPage, canActivate: [coordinatorOnlyGuard]},
   {path: 'curso/:course_id/aula/:lesson_id', component: LessonDetailPage},
 ];

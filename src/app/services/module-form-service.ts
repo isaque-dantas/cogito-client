@@ -18,10 +18,10 @@ export class ModuleFormService {
     })
   }
 
-  handleAdd(moduleData: ModuleForm) {
-    this.moduleService.create(moduleData).subscribe({
-      next: () => this.alertService.success(`O módulo '${moduleData.title}' foi adicionada com sucesso.`),
-      error: () => this.alertService.error(`Ocorreu um erro ao adicionar o módulo '${moduleData.title}'. Tente novamente`),
+  handleAdd(moduleData: { courseId: number, data: ModuleForm }) {
+    this.moduleService.create(moduleData.data, moduleData.courseId).subscribe({
+      next: () => this.alertService.success(`O módulo '${moduleData.data.title}' foi adicionada com sucesso.`),
+      error: () => this.alertService.error(`Ocorreu um erro ao adicionar o módulo '${moduleData.data.title}'. Tente novamente`),
     })
   }
 

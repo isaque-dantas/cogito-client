@@ -12,7 +12,7 @@ import {provideEnvironmentNgxMask} from 'ngx-mask';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideZoneChangeDetection({ eventCoalescing: true }),
+    // provideZoneChangeDetection({ eventCoalescing: true }),
     // provideClientHydration(withEventReplay()),
     provideRouter(routes),
     provideHttpClient(

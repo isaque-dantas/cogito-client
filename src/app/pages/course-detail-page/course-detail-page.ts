@@ -76,8 +76,6 @@ export class CourseDetailPage {
     runInInjectionContext(this.injector, () => {
       afterNextRender(() => {
         const courseProgressBar: HTMLElement = (this.elementRef.nativeElement as Element).querySelector("#" + this.courseProgressBarId)!
-        console.log(courseProgressBar)
-        console.log(progressPercentage)
         courseProgressBar.style.width = `${progressPercentage! * 100}%`;
       })
     })
@@ -102,7 +100,6 @@ export class CourseDetailPage {
   }
 
   deleteCourse(id: number) {
-    console.log("tentando exluir id", id)
     this.courseService.delete(id).subscribe({
       next: () => this.alertService.success(`Curso #${id} excluído com sucesso.`),
       error: () => this.alertService.error("Ocorreu um erro ao tentar excluir o curso. Tente novamente.")

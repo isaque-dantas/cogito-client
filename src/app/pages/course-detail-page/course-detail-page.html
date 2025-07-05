@@ -1,113 +1,115 @@
-<div class="flex flex-col min-h-screen">
+<div class="flex flex-col min-h-screen max-h-screen">
   <app-header></app-header>
-  <main class="flex h-full flex-1">
+  <main class="flex-1 flex min-h-full ">
 
     @if (course) {
       <app-side-menu [course]="course"></app-side-menu>
-      <article class="max-w-4xl w-full px-10 mx-auto my-20">
-        @if (authService.isAuthenticated()) {
-          <div class="flex items-center mb-8">
-            @if (course.is_subscribed && course.has_user_finished) {
-              <p class="flex gap-1 text-green-700 mr-6">
-                <span>Curso finalizado</span>
-                <span class="material-symbols-outlined">check</span>
-              </p>
+      <div class="min-h-full overflow-y-auto mt-10 mb-4 mx-auto w-full max-w-5xl px-10">
+        <article class="h-full pb-4 pt-2">
+          @if (authService.isAuthenticated()) {
+            <div class="flex items-center mb-8">
+              @if (course.is_subscribed && course.has_user_finished) {
+                <p class="flex gap-1 text-green-700 mr-6">
+                  <span>Curso finalizado</span>
+                  <span class="material-symbols-outlined">check</span>
+                </p>
 
-            } @else if (!course.is_subscribed) {
-              <button
-                (click)="subscribeIntoCourse(course!.id)"
-                type="button"
-                class="mr-6 flex gap-2 px-2 py-1 border-2 rounded-lg border-secondary text-secondary font-semibold cursor-pointer hover:scale-105 transition-all">
-                <span>Realizar inscrição</span>
-                <span class="material-symbols-outlined">arrow_circle_right</span>
-              </button>
-            }
-
-            @if (authService.isLoggedUserCoordinator()) {
-              @if (!course.is_subscribed || (course.is_subscribed && course.has_user_finished)) {
-                <div class="w-1 h-1 bg-gray-500 rounded-full mr-6"></div>
+              } @else if (!course.is_subscribed) {
+                <button
+                  (click)="subscribeIntoCourse(course!.id)"
+                  type="button"
+                  class="mr-6 flex gap-2 px-2 py-1 border-2 rounded-lg border-secondary text-secondary font-semibold cursor-pointer hover:scale-105 transition-all">
+                  <span>Realizar inscrição</span>
+                  <span class="material-symbols-outlined">arrow_circle_right</span>
+                </button>
               }
-              <a routerLink="/curso/{{course.id}}/editar"
-                 class="mr-6 flex text-tertiary gap-2 items-center border border-tertiary px-2 py-0.5 rounded-lg">
-                <span>Editar curso</span>
-                <span class="material-symbols-outlined text-[20px]!">edit</span>
-              </a>
 
-              <button
-                (click)="deleteCourse(course!.id)"
-                class="flex gap-2 items-center border border-gray-500 text-gray-500 hover:border-red-800 hover:text-white hover:bg-red-800 p-1 rounded-lg transition-all cursor-pointer"
-              >
-                <span class="material-symbols-outlined text-[20px]!">delete</span>
-              </button>
-            }
-          </div>
-        } @else {
-          <p class="text-gray-500 italic mb-4 text-lg">Você precisa fazer login para se inscrever neste curso.</p>
-        }
-
-        <h1 class="text-4xl text-secondary font-bold">{{ course.title }}</h1>
-
-        @if (course.is_subscribed && !course.has_user_finished) {
-          <div class="flex flex-col gap-1 mt-8">
-            <p class="text-gray-500 italic text-sm">Você completou {{ course.progress_level_percentage | percentage }}
-              do curso.</p>
-            <div class="w-full h-3 rounded-lg mb-8 overflow-clip border border-secondary">
-              <p [id]="courseProgressBarId" class="bg-secondary h-full"></p>
-            </div>
-          </div>
-        }
-
-        @if (!course.is_subscribed && !authService.isLoggedUserCoordinator()) {
-          <p class="mt-6 text-lg italic text-gray-500 max-w-120">As aulas estão bloqueadas porque você não está
-            inscrito(a) neste curso.
-
-            @if (!authService.isAuthenticated()) {
-              <a routerLink="/login" class="underline underline-offset-2">Faça login</a> e tente
-                novamente.
-            }
-          </p>
-        }
-
-        <div class="flex flex-col gap-12 mt-6">
-          @for (module of course.modules; track module.id) {
-            <div>
-              <h3 class="mb-6 text-2xl text-tertiary font-medium">{{ module | moduleTitle }}</h3>
-              <ul class="flex flex-col gap-4">
-                @for (lesson of module.lessons; track lesson.id) {
-                  @switch (lesson.status) {
-                    @case (LessonStatus.LOCKED) {
-                      <li class="lesson-item border-gray-500 text-gray-500 locked">
-                        <span class="material-symbols-outlined text-[16px]!">lock</span>
-                        <p class="w-full">{{ lesson | lessonTitle }}</p>
-                      </li>
-                    }
-                    @case (LessonStatus.ACCESSED) {
-                      <li
-                        routerLink="/curso/{{course.id}}/aula/{{lesson.id}}"
-                        class="lesson-item border-green-700 text-green-700"
-                      >
-                        <span class="material-symbols-outlined text-[16px]!">check</span>
-                        <p class="w-full">{{ lesson | lessonTitle }}</p>
-                        <button type="button" class="material-symbols-outlined bg-green-700">chevron_right</button>
-                      </li>
-                    }
-                    @case (LessonStatus.ACCESSIBLE) {
-                      <li
-                        routerLink="/curso/{{course.id}}/aula/{{lesson.id}}"
-                        class="lesson-item border-secondary text-secondary"
-                      >
-                        <span class="material-symbols-outlined text-[16px]!">sticky_note_2</span>
-                        <p class="w-full">{{ lesson | lessonTitle }}</p>
-                        <button type="button" class="material-symbols-outlined bg-secondary">chevron_right</button>
-                      </li>
-                    }
-                  }
+              @if (authService.isLoggedUserCoordinator()) {
+                @if (!course.is_subscribed || (course.is_subscribed && course.has_user_finished)) {
+                  <div class="w-1 h-1 bg-gray-500 rounded-full mr-6"></div>
                 }
-              </ul>
+                <a routerLink="/curso/{{course.id}}/editar"
+                   class="mr-6 flex text-tertiary gap-2 items-center border border-tertiary px-2 py-0.5 rounded-lg">
+                  <span>Editar curso</span>
+                  <span class="material-symbols-outlined text-[20px]!">edit</span>
+                </a>
+
+                <button
+                  (click)="deleteCourse(course!.id)"
+                  class="flex gap-2 items-center border border-gray-500 text-gray-500 hover:border-red-800 hover:text-white hover:bg-red-800 p-1 rounded-lg transition-all cursor-pointer"
+                >
+                  <span class="material-symbols-outlined text-[20px]!">delete</span>
+                </button>
+              }
+            </div>
+          } @else {
+            <p class="text-gray-500 italic mb-4 text-lg">Você precisa fazer login para se inscrever neste curso.</p>
+          }
+
+          <h1 class="text-4xl text-secondary font-bold">{{ course.title }}</h1>
+
+          @if (course.is_subscribed && !course.has_user_finished) {
+            <div class="flex flex-col gap-1 mt-8">
+              <p class="text-gray-500 italic text-sm">Você completou {{ course.progress_level_percentage | percentage }}
+                do curso.</p>
+              <div class="w-full h-3 rounded-lg mb-8 overflow-clip border border-secondary">
+                <p [id]="courseProgressBarId" class="bg-secondary h-full"></p>
+              </div>
             </div>
           }
-        </div>
-      </article>
+
+          @if (!course.is_subscribed && !authService.isLoggedUserCoordinator()) {
+            <p class="mt-6 text-lg italic text-gray-500 max-w-120">As aulas estão bloqueadas porque você não está
+              inscrito(a) neste curso.
+
+              @if (!authService.isAuthenticated()) {
+                <a routerLink="/login" class="underline underline-offset-2">Faça login</a> e tente
+                  novamente.
+              }
+            </p>
+          }
+
+          <div class="flex flex-col gap-12 mt-6">
+            @for (module of course.modules; track module.id) {
+              <div class="pb-4">
+                <h3 class="mb-6 text-2xl text-tertiary font-medium">{{ module | moduleTitle }}</h3>
+                <ul class="flex flex-col gap-4">
+                  @for (lesson of module.lessons; track lesson.id) {
+                    @switch (lesson.status) {
+                      @case (LessonStatus.LOCKED) {
+                        <li class="lesson-item border-gray-500 text-gray-500 locked">
+                          <span class="material-symbols-outlined text-[16px]!">lock</span>
+                          <p class="w-full">{{ lesson | lessonTitle }}</p>
+                        </li>
+                      }
+                      @case (LessonStatus.ACCESSED) {
+                        <li
+                          routerLink="/curso/{{course.id}}/aula/{{lesson.id}}"
+                          class="lesson-item border-green-700 text-green-700"
+                        >
+                          <span class="material-symbols-outlined text-[16px]!">check</span>
+                          <p class="w-full">{{ lesson | lessonTitle }}</p>
+                          <button type="button" class="material-symbols-outlined bg-green-700">chevron_right</button>
+                        </li>
+                      }
+                      @case (LessonStatus.ACCESSIBLE) {
+                        <li
+                          routerLink="/curso/{{course.id}}/aula/{{lesson.id}}"
+                          class="lesson-item border-secondary text-secondary"
+                        >
+                          <span class="material-symbols-outlined text-[16px]!">sticky_note_2</span>
+                          <p class="w-full">{{ lesson | lessonTitle }}</p>
+                          <button type="button" class="material-symbols-outlined bg-secondary">chevron_right</button>
+                        </li>
+                      }
+                    }
+                  }
+                </ul>
+              </div>
+            }
+          </div>
+        </article>
+      </div>
       <ng-template #editButton>
         <div class="edit-button-wrapper">
           <a routerLink="/" class="edit-button material-symbols-outlined">edit</a>

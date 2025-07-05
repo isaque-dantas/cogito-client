@@ -9,8 +9,8 @@ import {Module, ModuleForm, ModuleUpdateForm} from '../interfaces/module';
 export class ModuleService {
   http = inject(HttpClient);
 
-  create(data: ModuleForm) {
-    return this.http.post<Module>(`${API_BASE_URL}/module`, data)
+  create(data: ModuleForm, courseId: number) {
+    return this.http.post<Module>(`${API_BASE_URL}/course/${courseId}/module`, data)
   }
 
   update(id: number, updateData: ModuleUpdateForm) {

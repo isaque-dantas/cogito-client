@@ -1,6 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {Observable} from 'rxjs';
 import {API_BASE_URL} from '../app.config';
 import {Course, CourseForm, CoursePatchForm} from '../interfaces/course';
 
@@ -32,7 +32,13 @@ export class CourseService {
   }
 
   subscribeIn(id: number) {
-    console.log(`Tentando com id ${id}`)
     return this.http.post<Course>(`${this.base_url}/${id}/subscribe`, {})
+  }
+
+  searchByTitle(searchQuery: string) {
+    return this.http.get<Course[]>(
+      this.base_url,
+      {params: {q: searchQuery}}
+    )
   }
 }

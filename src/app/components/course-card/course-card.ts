@@ -10,7 +10,6 @@ import {PercentagePipe} from '../../pipes/percentage-pipe';
     PercentagePipe
   ],
   templateUrl: './course-card.html',
-  styleUrl: './course-card.css'
 })
 export class CourseCard {
   @Input() course!: Course

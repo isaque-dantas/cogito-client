@@ -36,8 +36,6 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
   formService = inject(CourseFormService)
   form!: FormGroup
 
-  areThereAnyPendingChanges = false
-
   get modules() {
     return (this.form.controls as { modules: FormArray<FormGroup> }).modules
   }
@@ -91,4 +89,7 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
   sendFormToServer(courseForm: CourseForm): void { }
   beforeRemovingModule(moduleIndex: number) { }
   beforeRemovingLesson(moduleIndex: number, lessonIndex: number) { }
+  areThereAnyPendingChanges(): boolean {
+    return false
+  }
 }

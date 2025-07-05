@@ -8,7 +8,7 @@ import {
   ValidationErrors,
   Validators
 } from '@angular/forms';
-import {catchError, from, map, Observable, of} from 'rxjs';
+import {catchError, from, map, Observable, of, tap} from 'rxjs';
 import {Course, CourseForm, CourseFormGroup, CourseFormGroupWithId, CourseFormWithIds} from '../interfaces/course';
 import {
   LessonForm,
@@ -128,10 +128,13 @@ export class CourseFormService {
       const encodedVideoUrl = encodeURIComponent(`https://youtu.be/${videoId}`)
       const requestUrl = 'https://www.youtube.com/oembed?url=' + encodedVideoUrl
 
-      return from(fetch(requestUrl)).pipe(
-        map(() => null),
-        catchError(() => of({doesNotExist: true})),
-      )
+      return from(fetch(requestUrl))
+        .pipe(
+          map(response => {
+            if (response.ok) return null
+            return {doesNotExist: true}
+          })
+        )
     }
   }
 
@@ -242,10 +245,13 @@ export class CourseFormService {
   }
 
   getEntitiesToBeAdded(form: FormGroup<CourseFormGroupWithId>): {
-    modules: ModuleForm[],
+    modules: { courseId: number, data: ModuleForm }[],
     lessons: { moduleId: number, data: LessonForm }[]
   } {
-    const lessonMapper = (l: FormGroup<LessonFormGroupWithId>, moduleId: number): { moduleId: number, data: LessonForm } => ({
+    const lessonMapper = (l: FormGroup<LessonFormGroupWithId>, moduleId: number): {
+      moduleId: number,
+      data: LessonForm
+    } => ({
       moduleId: moduleId,
       data: {
         title: l.value.title!,
@@ -259,10 +265,13 @@ export class CourseFormService {
       video_link: this.getVideoIdFromRawUrl(l.value.video_link!)!
     })
 
-    const moduleMapper = (m: FormGroup<ModuleFormGroupWithId>): ModuleForm => ({
-      title: m.value.title!,
-      position: m.value.position!,
-      lessons: m.controls.lessons!.controls.map(lessonNestedFormMapper)
+    const moduleMapper = (m: FormGroup<ModuleFormGroupWithId>): { courseId: number, data: ModuleForm } => ({
+      courseId: form.value.id!,
+      data: {
+        title: m.value.title!,
+        position: m.value.position!,
+        lessons: m.controls.lessons!.controls.map(lessonNestedFormMapper)
+      }
     })
 
     const previouslyAddedModules = form.controls.modules.controls.filter(m => m.value.id !== null)
@@ -295,7 +304,11 @@ export class CourseFormService {
     const lessonMapper =
       (l: LessonNestedFormWithIds, index: number): LessonNestedFormWithIds => ({...l, position: index})
     const moduleMapper =
-      (m: ModuleNestedFormWithIds, index: number): ModuleNestedFormWithIds => ({...m, position: index, lessons: m.lessons.map(lessonMapper)})
+      (m: ModuleNestedFormWithIds, index: number): ModuleNestedFormWithIds => ({
+        ...m,
+        position: index,
+        lessons: m.lessons.map(lessonMapper)
+      })
 
     return {
       id: form.value.id!,

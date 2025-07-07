@@ -8,11 +8,13 @@ import {CourseEditingPage} from './pages/course-editing-page/course-editing-page
 import {CourseCreationPage} from './pages/course-creation-page/course-creation-page';
 import {SearchPage} from './pages/search-page/search-page';
 import {coordinatorOnlyGuard} from './auth/coordinator-only-guard';
+import {AdminPanelPage} from './pages/admin-panel-page/admin-panel-page';
 
 export const routes: Routes = [
   {path: '', component: HomePage},
   {path: 'cadastro', component: RegisterPage},
   {path: 'login', component: LoginPage},
+  {path: 'painel-administrativo', component: AdminPanelPage},
   {path: 'curso/adicionar', component: CourseCreationPage, canActivate: [coordinatorOnlyGuard]},
   {path: 'curso/pesquisar', component: SearchPage},
   {path: 'curso/:id', component: CourseDetailPage},

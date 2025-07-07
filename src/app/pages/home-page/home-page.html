@@ -1,18 +1,17 @@
 <app-header/>
 <main class="my-20 flex flex-col gap-4 px-20">
   <div class="flex gap-8 items-center">
-    @if (authService.isLoggedUserCoordinator()) {
-      <a routerLink="/curso/adicionar"
-         class="font-bold text-secondary text-xl flex gap-2 items-center border-2 border-secondary rounded-lg px-6 py-2 hover:bg-secondary hover:text-white transition-all">
-        <span>Adicionar curso</span>
-        <span class="material-symbols-outlined text-2xl">add</span>
-      </a>
-    }
     <app-search-form
       [searchQuery]="''"
       (searchQueryChanged)="goToSearchPageWithSearchQuery($event)">
     </app-search-form>
-
+    @if (authService.isLoggedUserCoordinator()) {
+      <a routerLink="/painel-administrativo"
+         class="font-bold text-secondary text-xl flex gap-2 items-center border-2 border-secondary rounded-lg px-6 py-2 hover:bg-secondary hover:text-white transition-all">
+        <span>Acessar painel administrativo</span>
+        <span class="material-symbols-outlined text-2xl">chevron_right</span>
+      </a>
+    }
   </div>
 
   @if (courses$ | async; as courses) {

@@ -1,0 +1,44 @@
+<app-header></app-header>
+<main class="m-20">
+  <h1 class="text-secondary text-4xl font-bold mb-10">Painel administrativo</h1>
+
+  <a routerLink="/curso/adicionar"
+     class="w-fit mb-10 font-bold text-secondary text-xl flex gap-2 items-center border-2 border-secondary rounded-lg px-6 py-2 hover:bg-secondary hover:text-white transition-all">
+    <span>Adicionar curso</span>
+    <span class="material-symbols-outlined text-2xl">add</span>
+  </a>
+
+  <table class="border border-tertiary rounded-lg">
+    <thead>
+    <tr>
+      <th>Nome do curso</th>
+      <th>Alunos não inscritos</th>
+      <th>Alunos inscritos</th>
+      <th>Alunos que concluíram</th>
+      <th></th>
+    </tr>
+    </thead>
+    @if (courses$ | async; as courses) {
+      <tbody>
+        @for (course of courses; track course.id) {
+          <tr>
+            <td class="course-name">{{ course.title }}</td>
+            <td class="numeric-value">{{ course.not_subscribed_students }}</td>
+            <td class="numeric-value">{{ course.subscribed_students}}</td>
+            <td class="numeric-value">{{ course.students_who_finished }}</td>
+            <td>
+              <button type="button"
+                      class="material-symbols-outlined btn text-secondary border-secondary hover:bg-secondary mr-2">
+                edit
+              </button>
+              <button type="button"
+                      class="material-symbols-outlined btn text-red-800 border border-red-800 hover:bg-red-800">
+                delete
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    }
+  </table>
+</main>

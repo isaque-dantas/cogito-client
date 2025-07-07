@@ -2,7 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {API_BASE_URL} from '../app.config';
-import {Course, CourseForm, CoursePatchForm} from '../interfaces/course';
+import {Course, CourseForm, CoursePatchForm, CourseWithCoordinatorInfo} from '../interfaces/course';
 
 @Injectable({
   providedIn: 'root'
@@ -40,5 +40,9 @@ export class CourseService {
       this.base_url,
       {params: {q: searchQuery}}
     )
+  }
+
+  getAllWithCoordinatorInfo() {
+    return this.http.get<CourseWithCoordinatorInfo[]>(`${this.base_url}?coordinator-info=true`);
   }
 }

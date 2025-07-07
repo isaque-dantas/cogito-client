@@ -12,6 +12,14 @@ export interface Course {
   has_user_finished?: boolean
 }
 
+export interface CourseWithCoordinatorInfo {
+  id: number;
+  title: string;
+  not_subscribed_students: number;
+  subscribed_students: number;
+  students_who_finished: number;
+}
+
 export interface CourseForm {
   title: string
   modules: ModuleNestedForm[]

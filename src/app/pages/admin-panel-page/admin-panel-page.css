@@ -1,0 +1,28 @@
+@reference '../../../styles.css';
+
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+table td.numeric-value {
+  /*min-width: 240px;*/
+}
+
+td.course-name {
+  @apply max-w-lg;
+}
+
+th, td {
+  padding: 16px;
+  vertical-align: center;
+  text-align: left;
+}
+
+td {
+  @apply border-t border-gray-400;
+}
+
+button.btn {
+  @apply transition-all text-xl! px-1 cursor-pointer items-center justify-center hover:text-white border rounded-lg;
+}

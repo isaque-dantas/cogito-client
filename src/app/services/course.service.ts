@@ -43,6 +43,6 @@ export class CourseService {
   }
 
   getAllWithCoordinatorInfo() {
-    return this.http.get<CourseWithCoordinatorInfo[]>(`${this.base_url}?coordinator-info=true`);
+    return this.http.get<CourseWithCoordinatorInfo[]>(`${this.base_url}?coordinator_info=true`);
   }
 }

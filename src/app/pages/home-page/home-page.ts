@@ -33,6 +33,18 @@ export class HomePage implements OnInit {
     this.courses$ = this.courseService.getAll()
   }
 
+  getAvailableCourses(courses:Course[]): Course[] {
+    return courses.filter(c => !c.is_subscribed && !c.has_user_finished)
+  }
+
+  getOngoingCourses(courses:Course[]): Course[] {
+    return courses.filter(c => c.is_subscribed && !c.has_user_finished)
+  }
+
+  getFinishedCourses(courses: Course[]): Course[] {
+    return courses.filter(c => c.is_subscribed && c.has_user_finished)
+  }
+
   isUserStillDoingInAtLeastOneCourse(courses: Course[]) {
     return courses.some(c => c.is_subscribed && !c.has_user_finished)
   }

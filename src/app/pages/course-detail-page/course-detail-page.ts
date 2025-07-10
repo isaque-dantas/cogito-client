@@ -99,12 +99,5 @@ export class CourseDetailPage {
     })
   }
 
-  deleteCourse(id: number) {
-    this.courseService.delete(id).subscribe({
-      next: () => this.alertService.success(`Curso #${id} excluído com sucesso.`),
-      error: () => this.alertService.error("Ocorreu um erro ao tentar excluir o curso. Tente novamente.")
-    })
-  }
-
   protected readonly LessonStatus = LessonStatus;
 }

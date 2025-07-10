@@ -14,7 +14,7 @@ export const routes: Routes = [
   {path: '', component: HomePage},
   {path: 'cadastro', component: RegisterPage},
   {path: 'login', component: LoginPage},
-  {path: 'painel-administrativo', component: AdminPanelPage},
+  {path: 'painel-administrativo', component: AdminPanelPage, canActivate: [coordinatorOnlyGuard]},
   {path: 'curso/adicionar', component: CourseCreationPage, canActivate: [coordinatorOnlyGuard]},
   {path: 'curso/pesquisar', component: SearchPage},
   {path: 'curso/:id', component: CourseDetailPage},

@@ -5,6 +5,7 @@ import {AsyncPipe} from '@angular/common';
 import {Observable} from 'rxjs';
 import {Course, CourseWithCoordinatorInfo} from '../../interfaces/course';
 import {CourseService} from '../../services/course.service';
+import {AlertService} from '../../services/alert';
 
 @Component({
   selector: 'app-admin-panel-page',
@@ -19,8 +20,16 @@ import {CourseService} from '../../services/course.service';
 export class AdminPanelPage {
   private courseService = inject(CourseService);
   courses$?: Observable<CourseWithCoordinatorInfo[]>;
+  private alertService = inject(AlertService);
 
   constructor() {
     effect(() => this.courses$ = this.courseService.getAllWithCoordinatorInfo())
+  }
+
+  deleteCourse(id: number) {
+    this.courseService.delete(id).subscribe({
+      next: () => this.alertService.success(`Curso #${id} excluído com sucesso.`),
+      error: () => this.alertService.error("Ocorreu um erro ao tentar excluir o curso. Tente novamente.")
+    })
   }
 }

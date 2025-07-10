@@ -15,55 +15,55 @@
   </div>
 
   @if (courses$ | async; as courses) {
+
+
     <div class="mt-16">
       <h3 class="font-bold text-3xl text-secondary mb-6">Cursos disponíveis</h3>
       <ul class="grid grid-cols-4 gap-6">
-        @if (courses.length > 0) {
-          @for (course of courses; track course.id) {
+        @if (getAvailableCourses(courses).length > 0) {
+          @for (course of getAvailableCourses(courses); track course.id) {
             <li>
               <app-course-card [course]="course"></app-course-card>
             </li>
           }
         } @else {
-          <li>Não foram encontrados cursos.</li>
+          <li>Não foram encontrados cursos disponíveis.</li>
         }
       </ul>
     </div>
 
     @if (authService.isAuthenticated()) {
+
       <div class="flex flex-col gap-6 mt-16">
         <h3 class="font-bold text-3xl text-secondary">Cursos em andamento</h3>
-        <ul class="grid grid-cols-4 gap-6">
-          @if (isUserStillDoingInAtLeastOneCourse(courses)) {
-            @for (course of courses; track course.id) {
-              @if (course.is_subscribed && !course.has_user_finished) {
-                <li>
-                  <app-course-card [course]="course"/>
-                </li>
-              }
+        @if (isUserStillDoingInAtLeastOneCourse(courses)) {
+          <ul class="grid grid-cols-4 gap-6">
+            @for (course of getOngoingCourses(courses); track course.id) {
+              <li>
+                <app-course-card [course]="course"/>
+              </li>
             }
-          } @else {
-            <li>Você não está realizando nenhum curso no momento.</li>
-          }
-        </ul>
+          </ul>
+        } @else {
+          <p>Você não está realizando nenhum curso no momento.</p>
+        }
       </div>
 
       <div class="flex flex-col gap-6 mt-16">
         <h3 class="font-bold text-3xl text-secondary">Cursos finalizados</h3>
-        <ul class="grid grid-cols-4 gap-6">
-          @if (hasUserFinishedAtLeastOneCourse(courses)) {
-            @for (course of courses; track course.id) {
-              @if (course.has_user_finished) {
-                <li>
-                  <app-course-card [course]="course"/>
-                </li>
-              }
+        @if (hasUserFinishedAtLeastOneCourse(courses)) {
+          <ul class="grid grid-cols-4 gap-6">
+            @for (course of getFinishedCourses(courses); track course.id) {
+              <li>
+                <app-course-card [course]="course"/>
+              </li>
             }
-          } @else {
-            <li>Você não finalizou nenhum curso.</li>
-          }
-        </ul>
+          </ul>
+        } @else {
+          <p>Você não finalizou nenhum curso.</p>
+        }
       </div>
+
     }
   } @else {
     <p>Carregando...</p>

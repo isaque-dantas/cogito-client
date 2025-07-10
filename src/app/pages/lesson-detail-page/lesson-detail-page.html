@@ -44,7 +44,7 @@
             <span class="font-semibold text-xl leading-none">Aula anterior</span>
           </button>
 
-          @if (lesson.position_related_to_course === 'last') {
+          @if (lesson.position_related_to_course === 'last' || lesson.next_lesson_id === null) {
             <a routerLink="/curso/{{parentCourseId}}"
                class="flex items-center gap-2 text-tertiary font-semibold text-xl leading-none">
               <span>Voltar ao curso</span>

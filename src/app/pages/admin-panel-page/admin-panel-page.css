@@ -20,7 +20,7 @@ th, td {
 }
 
 td {
-  @apply border-t border-gray-400;
+  @apply border-t border-gray-300;
 }
 
 button.btn {

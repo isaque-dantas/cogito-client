@@ -8,7 +8,7 @@
     <span class="material-symbols-outlined text-2xl">add</span>
   </a>
 
-  <table class="border border-tertiary rounded-lg">
+  <table class="border border-gray-300 rounded-lg">
     <thead>
     <tr>
       <th>Nome do curso</th>
@@ -24,15 +24,19 @@
           <tr>
             <td class="course-name">{{ course.title }}</td>
             <td class="numeric-value">{{ course.not_subscribed_students }}</td>
-            <td class="numeric-value">{{ course.subscribed_students}}</td>
+            <td class="numeric-value">{{ course.subscribed_students }}</td>
             <td class="numeric-value">{{ course.students_who_finished }}</td>
             <td>
-              <button type="button"
-                      class="material-symbols-outlined btn text-secondary border-secondary hover:bg-secondary mr-2">
+              <button
+                type="button"
+                routerLink="/curso/{{course.id}}/editar"
+                class="material-symbols-outlined btn text-secondary border-secondary hover:bg-secondary mr-2">
                 edit
               </button>
-              <button type="button"
-                      class="material-symbols-outlined btn text-red-800 border border-red-800 hover:bg-red-800">
+              <button
+                (click)="deleteCourse(course.id)"
+                type="button"
+                class="material-symbols-outlined btn text-red-800 border border-red-800 hover:bg-red-800">
                 delete
               </button>
             </td>

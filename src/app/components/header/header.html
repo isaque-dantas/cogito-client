@@ -9,10 +9,12 @@
           <a routerLink="/"
              class="font-bold text-secondary cursor-pointer hover:underline underline-offset-2">Início</a>
         </li>
-        <li>
-          <a routerLink="/curso/adicionar"
-             class="font-bold text-secondary cursor-pointer hover:underline underline-offset-2">Adicionar curso</a>
-        </li>
+        @if (authService.isLoggedUserCoordinator()) {
+          <li>
+            <a routerLink="/curso/adicionar"
+               class="font-bold text-secondary cursor-pointer hover:underline underline-offset-2">Adicionar curso</a>
+          </li>
+        }
         <li>
           <button
             (click)="logout()"

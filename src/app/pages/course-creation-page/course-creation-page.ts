@@ -30,7 +30,7 @@ export class CourseCreationPage extends CourseFormBasePage {
     this.courseService.create(courseForm).subscribe({
       next: (course) => {
         this.alertService.success(`Curso '${course.title}' criado com sucesso.`)
-        this.form.reset()
+        this.router.navigateByUrl(`curso/${course.id}`);
       },
       error: this.handleFormError.bind(this),
     })

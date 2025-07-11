@@ -28,12 +28,15 @@ export class AdminPanelPage {
   breadcrumbs: Breadcrumb[] = [{label: 'Início', url: '/'}, {label: 'Painel Administrativo'}]
 
   constructor() {
-    effect(() => this.courses$ = this.courseService.getAllWithCoordinatorInfo())
+    this.courses$ = this.courseService.getAllWithCoordinatorInfo()
   }
 
   deleteCourse(id: number) {
     this.courseService.delete(id).subscribe({
-      next: () => this.alertService.success(`Curso #${id} excluído com sucesso.`),
+      next: () => {
+        this.alertService.success(`Curso #${id} excluído com sucesso.`)
+        this.courses$ = this.courseService.getAllWithCoordinatorInfo()
+      },
       error: () => this.alertService.error("Ocorreu um erro ao tentar excluir o curso. Tente novamente.")
     })
   }

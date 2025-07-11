@@ -1,11 +1,11 @@
 <app-header/>
 <main class="p-20">
+  <app-breadcrumb-lister [breadcrumbs]="breadcrumbs"></app-breadcrumb-lister>
   @if (form) {
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="flex flex-col gap-10 max-w-4xl">
         <div class="flex flex-col gap-6">
           <h1 class="font-bold text-4xl text-secondary">{{ formTitle }}</h1>
-          <!--          <ng-container *ngTemplateOutlet=""></ng-container>-->
           <div class="form-control" [class.invalid]="form.get('title')!.invalid">
             <label for="title">Título*</label>
             <input
@@ -109,7 +109,8 @@
                                 </p>
                               }
                               @if (lesson.get('video_link')!.getError('doesNotExist')) {
-                                <p class="error-message flex flex-col gap-1">O vídeo informado não existe no YouTube. O link está correto?</p>
+                                <p class="error-message flex flex-col gap-1">O vídeo informado não existe no YouTube. O
+                                  link está correto?</p>
                               }
                             </div>
                             <button
@@ -138,7 +139,7 @@
           </div>
         </div>
         <div
-          class="fixed bottom-0 left-0 py-4 pl-20 pr-4 rounded-tr-xl bg-white/50 backdrop-blur-xl flex gap-4 items-center">
+          class="fixed bottom-0 left-0 py-4 pl-20 pr-4 rounded-tr-xl bg-white/50 backdrop-blur-xl flex gap-6 items-center">
           <button
             [disabled]="form.invalid"
             type="submit"
@@ -148,6 +149,12 @@
             <span class="material-symbols-outlined text-2xl!">check</span>
           </button>
           @if (this.submitButtonLabel === "Salvar alterações") {
+            <a [routerLink]="getUrlForCourseView()"
+               class="cursor-pointer px-4 py-1 flex gap-1 items-center rounded-sm bg-primary/10 text-secondary">
+              <p class="leading-none font-bold">Ver curso</p>
+              <span class="material-symbols-outlined">chevron_right</span>
+            </a>
+
             @if (areThereAnyPendingChanges()) {
               <p class="max-w-40 italic text-red-800 leading-none">
                 Há alterações não salvas.

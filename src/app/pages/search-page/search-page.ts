@@ -8,6 +8,7 @@ import {Course} from '../../interfaces/course';
 import {CourseService} from '../../services/course.service';
 import {AsyncPipe} from '@angular/common';
 import {CourseCard} from '../../components/course-card/course-card';
+import {BreadcrumbLister} from '../../components/breadcumb-lister/breadcrumb-lister.component';
 
 @Component({
   selector: 'app-search-page',
@@ -15,7 +16,8 @@ import {CourseCard} from '../../components/course-card/course-card';
     Header,
     SearchForm,
     AsyncPipe,
-    CourseCard
+    CourseCard,
+    BreadcrumbLister
   ],
   templateUrl: './search-page.html',
   styleUrl: './search-page.css'
@@ -27,6 +29,8 @@ export class SearchPage implements OnInit {
 
   searchQuery = signal<string>('')
   courses$!: Observable<Course[]>
+
+  breadcrumbs = [{label: 'Início', url: '/'}, {label: 'Pesquisar'}]
 
   constructor() {
     effect(() => {

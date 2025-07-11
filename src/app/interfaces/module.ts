@@ -1,4 +1,4 @@
-import {LessonNestedForm, LessonForm, LessonNestedResponse, LessonNestedFormWithIds} from './lesson';
+import {LessonNestedForm, LessonForm, LessonNestedResponse, LessonNestedFormWithIds, LessonUpdateForm} from './lesson';
 import {FormArray, FormControl, FormGroup, UntypedFormGroup} from '@angular/forms';
 import {LessonFormGroup, LessonFormGroupWithId} from './lesson';
 
@@ -48,4 +48,16 @@ export interface ModuleFormGroupWithId {
   title: FormControl<string | null>,
   lessons: FormArray<FormGroup<LessonFormGroupWithId>>,
   position: FormControl<number | null>
+}
+
+export interface ModuleUpdateData {
+  id: number
+  data: ModuleUpdateForm
+  formGroup: FormGroup<ModuleFormGroupWithId>
+}
+
+export interface ModuleCreationData {
+  courseId: number
+  data: ModuleForm
+  formGroup: FormGroup<ModuleFormGroupWithId>
 }

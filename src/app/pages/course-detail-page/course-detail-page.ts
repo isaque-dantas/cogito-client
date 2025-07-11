@@ -1,29 +1,31 @@
-import {afterNextRender, Component, effect, ElementRef, inject, Injector, runInInjectionContext} from '@angular/core';
+import {afterNextRender, Component, ElementRef, inject, Injector, runInInjectionContext} from '@angular/core';
 import {Header} from '../../components/header/header';
 import {SideMenu} from '../../components/side-menu/side-menu';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {Course} from '../../interfaces/course';
 import {CourseService} from '../../services/course.service';
 import {AlertService} from '../../services/alert';
-import {AsyncPipe, NgTemplateOutlet} from '@angular/common';
 import {LessonStatus} from '../../interfaces/lesson';
 import {HttpErrorResponse} from '@angular/common/http';
 import {AuthService} from '../../services/auth.service';
 import {PercentagePipe} from '../../pipes/percentage-pipe';
 import {ModuleTitlePipe} from '../../pipes/module-title-pipe';
 import {LessonTitlePipe} from '../../pipes/lesson-title-pipe';
+import {BreadcrumbLister} from '../../components/breadcumb-lister/breadcrumb-lister.component';
+import {Breadcrumb} from '../../interfaces/breadcrumb';
+import {NgTemplateOutlet} from '@angular/common';
 
 @Component({
   selector: 'app-course-detail-page',
   imports: [
     Header,
     SideMenu,
-    AsyncPipe,
     RouterLink,
     PercentagePipe,
-    NgTemplateOutlet,
     ModuleTitlePipe,
-    LessonTitlePipe
+    LessonTitlePipe,
+    BreadcrumbLister,
+    NgTemplateOutlet
   ],
   templateUrl: './course-detail-page.html',
   styleUrl: './course-detail-page.css',
@@ -42,9 +44,12 @@ export class CourseDetailPage {
   course: Course | null = null;
   courseProgressBarId: string = "progress-bar";
 
+  breadcrumbs: Breadcrumb[] = []
+
   constructor() {
     this.activatedRoute.params.subscribe((params) => {
       const courseId = params['id']
+      this.breadcrumbs = [{label: 'Início', url: '/'}, {label: 'Curso', url: '/curso/' + courseId}]
 
       if (!courseId) {
         this.alertService.error('É preciso informar o ID do curso.')
@@ -96,6 +101,13 @@ export class CourseDetailPage {
 
         this.alertService.error("Ocorreu um erro ao tentar inscrever você neste curso. Tente novamente.")
       }
+    })
+  }
+
+  deleteCourse(id: number) {
+    this.courseService.delete(id).subscribe({
+      next: () => this.alertService.success(`Curso #${id} excluído com sucesso.`),
+      error: () => this.alertService.error("Ocorreu um erro ao tentar excluir o curso. Tente novamente.")
     })
   }
 

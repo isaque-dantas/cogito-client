@@ -1,33 +1,28 @@
 <div class="flex flex-col min-h-screen">
   <app-header></app-header>
   <main class="my-10 mx-32 flex flex-col flex-1 h-full">
-    @if (lesson) {
-      <div class="flex flex-col gap-2 mb-12">
-        <a routerLink="/curso/{{parentCourseId}}"
-           class="text-xl cursor-pointer underline underline-offset-2">{{ lesson.parent_course_title }}</a>
-        <p class="flex gap-2 pl-6">
-          <span class="material-symbols-outlined text-[20px]!">subdirectory_arrow_right</span>
-          <span>{{ lesson.parent_module | moduleTitle }}</span>
-        </p>
-      </div>
+    @if (lesson()) {
+      <app-breadcrumb-lister [breadcrumbs]="breadcrumbs"></app-breadcrumb-lister>
+      <p class="w-fit text-lg text-tertiary">{{ lesson()!.parent_module | moduleTitle }}</p>
       <div class="flex flex-col gap-8 h-full flex-1">
-        <h1 class="text-secondary font-bold text-4xl">{{ lesson | lessonTitle }}</h1>
+        <h1 class="text-secondary font-bold text-4xl">{{ lesson()! | lessonTitle }}</h1>
 
-        @if (lesson.video_link) {
+        @if (lesson()!.video_link) {
           <div class="h-full w-full flex-1 flex justify-center" [id]="videoWrapperId">
             <youtube-player
-              [videoId]="lesson.video_link"
+              [videoId]="lesson()!.video_link"
               [width]="videoWrapperWidth"
               [height]="videoWrapperHeight">
             </youtube-player>
           </div>
-        } @else if (lesson.status == LessonStatus.LOCKED) {
+        } @else if (lesson()!.status == LessonStatus.LOCKED) {
           <p class="text-2xl">O acesso ao vídeo desta aula está bloqueado.
 
-            @if (lesson.position_related_to_course !== 'first') {
-              <span>Inscreva-se no curso "{{ lesson.parent_course_title }}" e acesse todas as aulas anteriores.</span>
+            @if (lesson()!.position_related_to_course !== 'first') {
+              <span>Inscreva-se no curso "{{ lesson()!.parent_course_title }}
+                " e acesse todas as aulas anteriores.</span>
             } @else {
-              <span>Inscreva-se no curso "{{ lesson.parent_course_title }}".</span>
+              <span>Inscreva-se no curso "{{ lesson()!.parent_course_title }}".</span>
             }
           </p>
         } @else {
@@ -37,15 +32,15 @@
         <div class="flex justify-between">
           <button
             (click)="goToPreviousLesson()"
-            [disabled]="lesson.position_related_to_course === 'first'"
+            [disabled]="lesson()!.position_related_to_course === 'first'"
             type="button"
             class="flex gap-2 items-center cursor-pointer text-tertiary disabled:cursor-not-allowed disabled:text-gray-400">
             <span class="material-symbols-outlined">chevron_left</span>
             <span class="font-semibold text-xl leading-none">Aula anterior</span>
           </button>
 
-          @if (lesson.position_related_to_course === 'last' || lesson.next_lesson_id === null) {
-            <a routerLink="/curso/{{parentCourseId}}"
+          @if (lesson()!.position_related_to_course === 'last' || lesson()!.next_lesson_id === null) {
+            <a routerLink="/curso/{{parentCourseId()}}"
                class="flex items-center gap-2 text-tertiary font-semibold text-xl leading-none">
               <span>Voltar ao curso</span>
               <span class="material-symbols-outlined">chevron_right</span>
@@ -62,7 +57,7 @@
         </div>
       </div>
     } @else {
-      <p>Carregando...</p>
+      <p class="fixed top-1/2 left-1/2 -translate-1/2">Carregando...</p>
     }
   </main>
 </div>

@@ -1,5 +1,5 @@
-import {FormControl} from '@angular/forms';
-import {ModuleNestedResponse} from './module';
+import {FormControl, FormGroup} from '@angular/forms';
+import {ModuleForm, ModuleNestedResponse} from './module';
 
 export interface Lesson {
   id: number
@@ -69,4 +69,16 @@ export interface LessonFormGroupWithId {
   title: FormControl<string | null>,
   video_link: FormControl<string | null>,
   position: FormControl<number | null>
+}
+
+export interface LessonUpdateData {
+  id: number
+  data: LessonUpdateForm
+  formGroup: FormGroup<LessonFormGroupWithId>
+}
+
+export interface LessonCreationData {
+  moduleId: number
+  data: LessonForm
+  formGroup: FormGroup<LessonFormGroupWithId>
 }

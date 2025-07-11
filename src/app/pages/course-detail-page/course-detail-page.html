@@ -4,101 +4,135 @@
 
     @if (course) {
       <app-side-menu [course]="course"></app-side-menu>
-      <div class="min-h-full overflow-y-auto mt-10 mb-4 mx-auto w-full max-w-5xl px-10">
-        <article class="h-full pb-4 pt-2">
+      <div class="mx-auto max-w-5xl p-10 pb-6 w-full max-h-full min-h-full flex flex-col gap-6 ">
+        <div class="pl-2 pr-6">
+          <app-breadcrumb-lister [breadcrumbs]="breadcrumbs"></app-breadcrumb-lister>
           @if (authService.isAuthenticated()) {
-            <div class="flex items-center mb-8">
+            <div class="flex items-center">
               @if (course.is_subscribed && course.has_user_finished) {
-                <p class="flex gap-1 text-green-700 mr-6">
-                  <span>Curso finalizado</span>
-                  <span class="material-symbols-outlined">check</span>
-                </p>
+                <div class="flex gap-4 items-center mr-6">
+                  <p class="flex gap-1 text-green-700 ">
+                    <span>Curso finalizado</span>
+                    <span class="material-symbols-outlined">check</span>
+                  </p>
+                  <p class="text-gray-500 italic max-w-[320px]">Envie um e-mail para
+                    "{{ course.user_who_created.email }}" a fim de obter seu certificado.</p>
+                  <ng-container *ngTemplateOutlet="changeCourseButtons"></ng-container>
+                </div>
 
               } @else if (!course.is_subscribed) {
+                @if (!authService.isLoggedUserCoordinator()) {
+                  <p class="mr-6 max-w-[300px] text-xl italic text-red-800">
+                    As aulas estão bloqueadas porque você não está inscrito(a) neste curso.
+                  </p>
+                }
+
                 <button
                   (click)="subscribeIntoCourse(course!.id)"
                   type="button"
-                  class="flex gap-2 px-2 py-1 border-2 rounded-lg border-secondary text-secondary font-semibold cursor-pointer hover:scale-105 transition-all">
+                  class="mr-6 flex gap-2 px-2 py-1 border-2 rounded-lg border-secondary text-secondary font-semibold cursor-pointer hover:scale-105 transition-all">
                   <span>Realizar inscrição</span>
                   <span class="material-symbols-outlined">arrow_circle_right</span>
                 </button>
+
+                <ng-container *ngTemplateOutlet="changeCourseButtons"></ng-container>
+              } @else if (course.is_subscribed && !course.has_user_finished) {
+                <ng-container *ngTemplateOutlet="changeCourseButtons"></ng-container>
               }
             </div>
           } @else {
-            <p class="text-gray-500 italic mb-4 text-lg">Você precisa fazer login para se inscrever neste curso.</p>
-          }
-
-          <h1 class="text-4xl text-secondary font-bold">{{ course.title }}</h1>
-
-          @if (course.is_subscribed && !course.has_user_finished) {
-            <div class="flex flex-col gap-1 mt-8">
-              <p class="text-gray-500 italic text-sm">Você completou {{ course.progress_level_percentage | percentage }}
-                do curso.</p>
-              <div class="w-full h-3 rounded-lg mb-8 overflow-clip border border-secondary">
-                <p [id]="courseProgressBarId" class="bg-secondary h-full"></p>
-              </div>
-            </div>
-          }
-
-          @if (!course.is_subscribed && !authService.isLoggedUserCoordinator()) {
-            <p class="mt-6 text-xl italic text-red-800">As aulas estão bloqueadas porque você não está
-              inscrito(a) neste curso.
-
+            <p class="text-xl max-w-[480px] italic text-red-800">As aulas estão bloqueadas porque você
+              não está inscrito(a)
+              neste curso.
               @if (!authService.isAuthenticated()) {
                 <a routerLink="/login" class="underline underline-offset-2">Faça login</a> e tente
                   novamente.
               }
             </p>
           }
+        </div>
+        <div class="h-full overflow-y-auto overflow-x-visible w-full pl-2 pr-6">
+          <article class="h-fit pt-2">
+            <h1 class="text-4xl text-secondary font-bold">{{ course.title }}</h1>
 
-          <div class="flex flex-col gap-12 mt-6">
-            @for (module of course.modules; track module.id) {
-              <div class="pb-4">
-                <h3 class="mb-6 text-2xl text-tertiary font-medium">{{ module | moduleTitle }}</h3>
-                <ul class="flex flex-col gap-4">
-                  @for (lesson of module.lessons; track lesson.id) {
-                    @switch (lesson.status) {
-                      @case (LessonStatus.LOCKED) {
-                        <li class="lesson-item border-gray-500 text-gray-500 locked">
-                          <span class="material-symbols-outlined text-[16px]!">lock</span>
-                          <p class="w-full">{{ lesson | lessonTitle }}</p>
-                        </li>
-                      }
-                      @case (LessonStatus.ACCESSED) {
-                        <li
-                          routerLink="/curso/{{course.id}}/aula/{{lesson.id}}"
-                          class="lesson-item border-green-700 text-green-700"
-                        >
-                          <span class="material-symbols-outlined text-[16px]!">check</span>
-                          <p class="w-full">{{ lesson | lessonTitle }}</p>
-                          <button type="button" class="material-symbols-outlined bg-green-700">chevron_right</button>
-                        </li>
-                      }
-                      @case (LessonStatus.ACCESSIBLE) {
-                        <li
-                          routerLink="/curso/{{course.id}}/aula/{{lesson.id}}"
-                          class="lesson-item border-secondary text-secondary"
-                        >
-                          <span class="material-symbols-outlined text-[16px]!">sticky_note_2</span>
-                          <p class="w-full">{{ lesson | lessonTitle }}</p>
-                          <button type="button" class="material-symbols-outlined bg-secondary">chevron_right</button>
-                        </li>
-                      }
-                    }
-                  }
-                </ul>
+            @if (course.is_subscribed && !course.has_user_finished) {
+              <div class="flex flex-col gap-1 mt-8">
+                <p class="text-gray-500 italic text-sm">Você
+                  completou {{ course.progress_level_percentage | percentage }}
+                  do curso.</p>
+                <div class="w-full h-3 rounded-lg mb-8 overflow-clip border border-secondary">
+                  <p [id]="courseProgressBarId" class="bg-secondary h-full"></p>
+                </div>
               </div>
             }
-          </div>
-        </article>
+
+            <div class="flex flex-col gap-12 mt-6">
+              @for (module of course.modules; track module.id) {
+                <div class="pb-4">
+                  <h3 class="mb-6 text-2xl text-tertiary font-medium">{{ module | moduleTitle }}</h3>
+                  <ul class="flex flex-col gap-4">
+                    @for (lesson of module.lessons; track lesson.id) {
+                      @switch (lesson.status) {
+                        @case (LessonStatus.LOCKED) {
+                          <li class="lesson-item border-gray-500 text-gray-500 locked">
+                            <span class="material-symbols-outlined text-[16px]!">lock</span>
+                            <p class="w-full">{{ lesson | lessonTitle }}</p>
+                          </li>
+                        }
+                        @case (LessonStatus.ACCESSED) {
+                          <li
+                            routerLink="/curso/{{course.id}}/aula/{{lesson.id}}"
+                            class="lesson-item border-green-700 text-green-700"
+                          >
+                            <span class="material-symbols-outlined text-[16px]!">check</span>
+                            <p class="w-full">{{ lesson | lessonTitle }}</p>
+                            <button type="button" class="material-symbols-outlined bg-green-700">chevron_right</button>
+                          </li>
+                        }
+                        @case (LessonStatus.ACCESSIBLE) {
+                          <li
+                            routerLink="/curso/{{course.id}}/aula/{{lesson.id}}"
+                            class="lesson-item border-secondary text-secondary"
+                          >
+                            <span class="material-symbols-outlined text-[16px]!">sticky_note_2</span>
+                            <p class="w-full">{{ lesson | lessonTitle }}</p>
+                            <button type="button" class="material-symbols-outlined bg-secondary">chevron_right</button>
+                          </li>
+                        }
+                      }
+                    }
+                  </ul>
+                </div>
+              }
+            </div>
+          </article>
+        </div>
       </div>
-<!--      <ng-template #editButton>-->
-<!--        <div class="edit-button-wrapper">-->
-<!--          <a routerLink="/" class="edit-button material-symbols-outlined">edit</a>-->
-<!--        </div>-->
-<!--      </ng-template>-->
+      <!--      <ng-template #editButton>-->
+        <!--        <div class="edit-button-wrapper">-->
+        <!--          <a routerLink="/" class="edit-button material-symbols-outlined">edit</a>-->
+        <!--        </div>-->
+        <!--      </ng-template>-->
+      <ng-template #changeCourseButtons>
+        @if (authService.isLoggedUserCoordinator()) {
+          <div class="flex gap-4">
+            <a
+              routerLink="/curso/{{course.id}}/editar"
+              class="btn gap-1 px-2 text-secondary border-secondary hover:bg-secondary">
+              <p class="font-bold">Editar</p>
+              <span class="material-symbols-outlined text-xl!">edit</span>
+            </a>
+            <button
+              (click)="deleteCourse(course.id)"
+              type="button"
+              class="material-symbols-outlined btn px-1 text-xl! text-red-800 border border-red-800 hover:bg-red-800">
+              delete
+            </button>
+          </div>
+        }
+      </ng-template>
     } @else {
-      <p>Carregando...</p>
+      <p class="fixed top-1/2 left-1/2 -translate-1/2">Carregando...</p>
     }
 
   </main>

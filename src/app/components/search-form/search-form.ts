@@ -1,10 +1,12 @@
 import {Component, effect, Input, input, output} from '@angular/core';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
+import {BreadcrumbLister} from '../breadcumb-lister/breadcrumb-lister.component';
 
 @Component({
   selector: 'app-search-form',
   imports: [
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    BreadcrumbLister
   ],
   templateUrl: './search-form.html',
   styleUrl: 'search-form.css'

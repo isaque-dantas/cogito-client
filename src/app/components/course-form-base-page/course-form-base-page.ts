@@ -6,20 +6,18 @@ import {CourseService} from '../../services/course.service';
 import {CourseForm} from '../../interfaces/course';
 import {AlertService} from '../../services/alert';
 import {HttpErrorResponse} from '@angular/common/http';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {CourseFormBasePageInterface} from '../../interfaces/course-form-base-page';
-import {NgxMaskDirective} from 'ngx-mask';
-import {ModuleForm} from '../../interfaces/module';
-import {LessonForm} from '../../interfaces/lesson';
-import {NgTemplateOutlet} from '@angular/common';
+import {BreadcrumbLister} from '../breadcumb-lister/breadcrumb-lister.component';
+import {Breadcrumb} from '../../interfaces/breadcrumb';
 
 @Component({
   selector: 'app-course-form-base-page',
   imports: [
     Header,
     ReactiveFormsModule,
-    NgxMaskDirective,
-    NgTemplateOutlet,
+    BreadcrumbLister,
+    RouterLink,
   ],
   templateUrl: './course-form-base-page.html',
   styleUrl: './course-form-base-page.css'
@@ -35,6 +33,8 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
 
   formService = inject(CourseFormService)
   form!: FormGroup
+
+  breadcrumbs: Breadcrumb[] = []
 
   get modules() {
     return (this.form.controls as { modules: FormArray<FormGroup> }).modules
@@ -91,5 +91,8 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
   beforeRemovingLesson(moduleIndex: number, lessonIndex: number) { }
   areThereAnyPendingChanges(): boolean {
     return false
+  }
+  getUrlForCourseView(): string {
+    return "/"
   }
 }

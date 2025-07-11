@@ -1,0 +1,9 @@
+<ol class="flex gap-2 mb-8 text-tertiary">
+  @for (breadcrumb of breadcrumbs(); track $index) {
+    <li><a routerLink="{{breadcrumb.url ?? currentUrl()}}" class="outline-0 hover:underline cursor-pointer hover:bg-blue-50 rounded-md px-2 py-1 transition-all">{{ breadcrumb.label }}</a>
+    </li>
+    @if (!$last) {
+      <li class="select-none">/</li>
+    }
+  }
+</ol>

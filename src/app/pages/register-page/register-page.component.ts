@@ -6,6 +6,7 @@ import {UserForm} from '../../interfaces/user';
 import {isCPF} from 'validation-br';
 import {AlertService} from '../../services/alert';
 import {HttpErrorResponse} from '@angular/common/http';
+import {NgxMaskDirective} from 'ngx-mask';
 
 @Component({
   selector: 'app-register-page',
@@ -13,7 +14,8 @@ import {HttpErrorResponse} from '@angular/common/http';
   imports: [
     RouterLink,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxMaskDirective
   ],
   templateUrl: './register-page.component.html',
   styleUrl: './register-page.component.css'

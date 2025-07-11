@@ -1,6 +1,7 @@
 <app-header></app-header>
 <main class="my-20 px-20">
-  <div class="mb-10">
+  <app-breadcrumb-lister [breadcrumbs]="breadcrumbs"></app-breadcrumb-lister>
+  <div class="mb-10 mt-8">
     <app-search-form
       [searchQuery]="searchQuery()"
       (searchQueryChanged)="searchCourses($event)">
@@ -22,7 +23,7 @@
         <p>Não há cursos que atendam a essa pesquisa.</p>
       }
     } @else {
-      <p>Carregando...</p>
+      <p class="fixed top-1/2 left-1/2 -translate-1/2">Carregando...</p>
     }
   } @else {
     <p>Não há um texto de pesquisa.</p>

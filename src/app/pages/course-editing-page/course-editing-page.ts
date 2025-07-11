@@ -8,12 +8,17 @@ import {ModuleFormService} from '../../services/module-form-service';
 import {LessonFormService} from '../../services/lesson-form-service';
 import {CourseFormBasePage} from '../../components/course-form-base-page/course-form-base-page';
 import {HttpErrorResponse} from '@angular/common/http';
+import {BreadcrumbLister} from '../../components/breadcumb-lister/breadcrumb-lister.component';
+import {Breadcrumb} from '../../interfaces/breadcrumb';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-course-editing-page',
   imports: [
     Header,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    BreadcrumbLister,
+    RouterLink
   ],
   templateUrl: '../../components/course-form-base-page/course-form-base-page.html',
   styleUrl: '../../components/course-form-base-page/course-form-base-page.css',
@@ -29,6 +34,7 @@ export class CourseEditingPage extends CourseFormBasePage implements OnInit {
   }
 
   declare form: FormGroup<CourseFormGroupWithId>
+  override breadcrumbs: Breadcrumb[] = [{'label': 'Início', 'url': '/'}, {'label': 'Painel Administrativo', 'url': '/painel-administrativo'}, {'label': this.formTitle}]
 
   moduleFormService = inject(ModuleFormService)
   lessonFormService = inject(LessonFormService)
@@ -50,6 +56,12 @@ export class CourseEditingPage extends CourseFormBasePage implements OnInit {
 
           this.form.setValue(courseForm)
           this.form.markAsPristine()
+
+          this.form.valueChanges.subscribe(() => {
+            // console.log(this.form.controls.modules.controls[0]!.controls.lessons.controls.map(control => control.dirty))
+            // console.log(this.form.controls.modules.controls[0]!.controls.lessons.controls.map(control => control.value.title))
+            console.log(this.form)
+          })
         },
         error: (err: HttpErrorResponse) => {
           if (err.status === 404) {
@@ -95,6 +107,9 @@ export class CourseEditingPage extends CourseFormBasePage implements OnInit {
     if (!this.areThereAnyPendingChanges()) {
       this.alertService.info("Não há alterações a serem aplicadas.")
     }
+
+    this.entitiesToDelete.modules = []
+    this.entitiesToDelete.lessons = []
   }
 
   override beforeRemovingModule(moduleIndex: number) {
@@ -119,5 +134,9 @@ export class CourseEditingPage extends CourseFormBasePage implements OnInit {
       ||
       this.entitiesToDelete.lessons.length >= 1
     )
+  }
+
+  override getUrlForCourseView(): string {
+    return `/curso/${this.courseBeingEditedId}`
   }
 }

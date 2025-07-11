@@ -16,7 +16,6 @@
 
   @if (courses$ | async; as courses) {
 
-
     <div class="mt-8">
       <h3 class="font-bold text-3xl text-secondary mb-6">Cursos disponíveis</h3>
       <ul class="grid grid-cols-4 gap-6">
@@ -66,6 +65,6 @@
 
     }
   } @else {
-    <p>Carregando...</p>
+    <p class="fixed top-1/2 left-1/2 -translate-1/2">Carregando...</p>
   }
 </main>

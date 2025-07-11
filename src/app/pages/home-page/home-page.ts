@@ -9,6 +9,7 @@ import {Router, RouterLink} from '@angular/router';
 import {AuthService} from '../../services/auth.service';
 import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 import {SearchForm} from '../../components/search-form/search-form';
+import {BreadcrumbLister} from '../../components/breadcumb-lister/breadcrumb-lister.component';
 
 @Component({
   selector: 'app-home-page',
@@ -18,7 +19,8 @@ import {SearchForm} from '../../components/search-form/search-form';
     AsyncPipe,
     RouterLink,
     ReactiveFormsModule,
-    SearchForm
+    SearchForm,
+    BreadcrumbLister
   ],
   templateUrl: './home-page.html',
   styleUrl: './home-page.css'

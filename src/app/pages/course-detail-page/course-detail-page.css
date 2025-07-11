@@ -31,3 +31,7 @@
 .edit-button {
   @apply p-1 border-2 border-tertiary rounded-lg text-tertiary cursor-pointer;
 }
+
+.btn {
+  @apply transition-all flex cursor-pointer items-center justify-center hover:text-white border rounded-lg;
+}

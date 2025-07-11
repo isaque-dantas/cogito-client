@@ -6,13 +6,16 @@ import {Observable} from 'rxjs';
 import {Course, CourseWithCoordinatorInfo} from '../../interfaces/course';
 import {CourseService} from '../../services/course.service';
 import {AlertService} from '../../services/alert';
+import {BreadcrumbLister} from '../../components/breadcumb-lister/breadcrumb-lister.component';
+import {Breadcrumb} from '../../interfaces/breadcrumb';
 
 @Component({
   selector: 'app-admin-panel-page',
   imports: [
     Header,
     RouterLink,
-    AsyncPipe
+    AsyncPipe,
+    BreadcrumbLister
   ],
   templateUrl: './admin-panel-page.html',
   styleUrl: './admin-panel-page.css'
@@ -21,6 +24,8 @@ export class AdminPanelPage {
   private courseService = inject(CourseService);
   courses$?: Observable<CourseWithCoordinatorInfo[]>;
   private alertService = inject(AlertService);
+
+  breadcrumbs: Breadcrumb[] = [{label: 'Início', url: '/'}, {label: 'Painel Administrativo'}]
 
   constructor() {
     effect(() => this.courses$ = this.courseService.getAllWithCoordinatorInfo())

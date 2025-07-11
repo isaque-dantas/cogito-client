@@ -1,6 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import {LessonService} from './lesson-service';
-import {LessonForm, LessonUpdateForm} from '../interfaces/lesson';
+import {LessonCreationData, LessonForm, LessonUpdateData, LessonUpdateForm} from '../interfaces/lesson';
 import {HttpErrorResponse} from '@angular/common/http';
 import {AlertService} from './alert';
 
@@ -11,16 +11,23 @@ export class LessonFormService {
   private lessonService = inject(LessonService)
   private alertService = inject(AlertService)
 
-  handleUpdate(lessonData: { id: number; data: LessonUpdateForm }) {
+  handleUpdate(lessonData: LessonUpdateData) {
     this.lessonService.update(lessonData.id, lessonData.data).subscribe({
-      next: () => this.alertService.success(`A aula #${lessonData.id} foi editada com sucesso.`),
+      next: () => {
+        this.alertService.success(`A aula #${lessonData.id} foi editada com sucesso.`)
+        lessonData.formGroup.markAsPristine()
+      },
       error: () => this.alertService.error(`Ocorreu um erro ao editar a aula #${lessonData.id}. Tente novamente.`),
     })
   }
 
-  handleAdd(lessonData: { moduleId: number, data: LessonForm }) {
+  handleAdd(lessonData: LessonCreationData) {
     this.lessonService.create(lessonData.data, lessonData.moduleId).subscribe({
-      next: () => this.alertService.success(`A aula '${lessonData.data.title}' foi adicionada com sucesso.`),
+      next: (lesson) => {
+        this.alertService.success(`A aula '${lessonData.data.title}' foi adicionada com sucesso.`)
+        lessonData.formGroup.markAsPristine()
+        lessonData.formGroup.controls.id.setValue(lesson.id)
+      },
       error: () => this.alertService.error(`Ocorreu um erro ao adicionar a aula '${lessonData.data.title}'. Tente novamente.`)
     })
   }

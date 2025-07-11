@@ -11,18 +11,19 @@ import {
 import {catchError, from, map, Observable, of, tap} from 'rxjs';
 import {Course, CourseForm, CourseFormGroup, CourseFormGroupWithId, CourseFormWithIds} from '../interfaces/course';
 import {
+  LessonCreationData,
   LessonForm,
   LessonFormGroup,
   LessonFormGroupWithId,
   LessonNestedForm, LessonNestedFormWithIds,
-  LessonNestedResponse, LessonUpdateForm
+  LessonNestedResponse, LessonUpdateData, LessonUpdateForm
 } from '../interfaces/lesson';
 import {
-  Module, ModuleForm,
+  Module, ModuleCreationData, ModuleForm,
   ModuleFormGroup,
   ModuleFormGroupWithId,
   ModuleNestedForm,
-  ModuleNestedFormWithIds,
+  ModuleNestedFormWithIds, ModuleUpdateData,
   ModuleUpdateForm
 } from '../interfaces/module';
 import {CourseService} from './course.service';
@@ -139,7 +140,7 @@ export class CourseFormService {
   }
 
   getVideoIdFromRawUrl(url: string): string | null {
-    const pattern = new RegExp(/v=[a-zA-Z\d_-]{11}$/)
+    const pattern = new RegExp(/v=[a-zA-Z\d_-]{11}[&\s]|v=[a-zA-Z\d_-]{11}$/)
     const patternLocalization = url.search(pattern)
 
     if (patternLocalization === -1) return null
@@ -206,15 +207,16 @@ export class CourseFormService {
   }
 
   getEntitiesToBeUpdated(form: FormGroup<CourseFormGroupWithId>): {
-    modules: { id: number, data: ModuleUpdateForm }[],
-    lessons: { id: number, data: LessonUpdateForm }[],
+    modules: ModuleUpdateData[],
+    lessons: LessonUpdateData[],
   } {
     const allLessonGroups = this.getAllLessonsFromForm(form)
 
     return {
       modules: form.controls.modules.controls.filter(m => this.isModuleFormGroupDirty(m) && m.value.id !== null).map(m => ({
         id: m.value.id!,
-        data: {title: (m.value.title as string | null), position: (m.value.position as number | null)}
+        data: {title: (m.value.title as string | null), position: (m.value.position as number | null)},
+        formGroup: m
       })),
       lessons: allLessonGroups.filter(l => this.isLessonFormGroupDirty(l) && l.value.id !== null).map(l => ({
         id: l.value.id!,
@@ -222,7 +224,8 @@ export class CourseFormService {
           title: (l.value.title as string | null),
           video_link: this.getVideoIdFromRawUrl(l.value.video_link as string),
           position: (l.value.position as number | null)
-        }
+        },
+        formGroup: l
       }))
     }
   }
@@ -239,25 +242,27 @@ export class CourseFormService {
     if (!form.controls.title.dirty) return;
 
     this.courseService.edit({title: titleValueToUpdate}, form.value.id!).subscribe({
-      next: () => this.alertService.success(`O curso #${form.value.id} foi editado com sucesso.`),
+      next: () => {
+        this.alertService.success(`O curso #${form.value.id} foi editado com sucesso.`)
+        form.controls.title.markAsPristine()
+      },
       error: () => this.alertService.error(`Não foi possível editar o curso. Tente novamente.`),
     })
   }
 
   getEntitiesToBeAdded(form: FormGroup<CourseFormGroupWithId>): {
-    modules: { courseId: number, data: ModuleForm }[],
-    lessons: { moduleId: number, data: LessonForm }[]
+    modules: ModuleCreationData[],
+    lessons: LessonCreationData[],
   } {
-    const lessonMapper = (l: FormGroup<LessonFormGroupWithId>, moduleId: number): {
-      moduleId: number,
-      data: LessonForm
-    } => ({
+
+    const lessonMapper = (l: FormGroup<LessonFormGroupWithId>, moduleId: number): LessonCreationData => ({
       moduleId: moduleId,
       data: {
         title: l.value.title!,
         position: l.value.position!,
         video_link: this.getVideoIdFromRawUrl(l.value.video_link!)!
-      }
+      },
+      formGroup: l
     })
 
     const lessonNestedFormMapper = (l: FormGroup<LessonFormGroupWithId>): LessonNestedForm => ({
@@ -265,17 +270,18 @@ export class CourseFormService {
       video_link: this.getVideoIdFromRawUrl(l.value.video_link!)!
     })
 
-    const moduleMapper = (m: FormGroup<ModuleFormGroupWithId>): { courseId: number, data: ModuleForm } => ({
+    const moduleMapper = (m: FormGroup<ModuleFormGroupWithId>): ModuleCreationData => ({
       courseId: form.value.id!,
       data: {
         title: m.value.title!,
         position: m.value.position!,
-        lessons: m.controls.lessons!.controls.map(lessonNestedFormMapper)
-      }
+        lessons: m.controls.lessons!.controls.map(lessonNestedFormMapper),
+      },
+      formGroup: m
     })
 
     const previouslyAddedModules = form.controls.modules.controls.filter(m => m.value.id !== null)
-    let lessons: { moduleId: number, data: LessonForm }[] = []
+    let lessons: LessonCreationData[] = []
     for (let module of previouslyAddedModules) {
       const addedLessonsForModule =
         module.controls.lessons.controls

@@ -2,15 +2,20 @@ import {Component} from '@angular/core';
 import {Header} from '../../components/header/header';
 import {CourseForm, CourseFormGroup} from '../../interfaces/course';
 import {CourseFormBasePage} from '../../components/course-form-base-page/course-form-base-page';
-import {FormArray, FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {NgxMaskDirective} from 'ngx-mask';
+import {Breadcrumb} from '../../interfaces/breadcrumb';
+import {BreadcrumbLister} from '../../components/breadcumb-lister/breadcrumb-lister.component';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-course-creation-page',
   imports: [
     Header,
     ReactiveFormsModule,
-    NgxMaskDirective
+    NgxMaskDirective,
+    BreadcrumbLister,
+    RouterLink
   ],
   templateUrl: '../../components/course-form-base-page/course-form-base-page.html',
   styleUrl: '../../components/course-form-base-page/course-form-base-page.css',
@@ -20,6 +25,7 @@ export class CourseCreationPage extends CourseFormBasePage {
   override submitButtonLabel = 'Enviar'
 
   declare form: FormGroup<CourseFormGroup>
+  override breadcrumbs: Breadcrumb[] = [{'label': 'Início', 'url': '/'}, {'label': 'Painel Administrativo', 'url': '/painel-administrativo'}, {'label': this.formTitle}]
 
   constructor() {
     super();

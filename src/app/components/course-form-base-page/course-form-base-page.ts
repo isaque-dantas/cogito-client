@@ -1,4 +1,4 @@
-import {Component, inject, TemplateRef} from '@angular/core';
+import {Component, computed, inject, signal, TemplateRef} from '@angular/core';
 import {Header} from '../header/header';
 import {FormArray, FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {CourseFormService} from '../../services/course-form-service';
@@ -10,6 +10,7 @@ import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {CourseFormBasePageInterface} from '../../interfaces/course-form-base-page';
 import {BreadcrumbLister} from '../breadcumb-lister/breadcrumb-lister.component';
 import {Breadcrumb} from '../../interfaces/breadcrumb';
+import {ModuleTitlePipe} from '../../pipes/module-title-pipe';
 
 @Component({
   selector: 'app-course-form-base-page',
@@ -18,6 +19,7 @@ import {Breadcrumb} from '../../interfaces/breadcrumb';
     ReactiveFormsModule,
     BreadcrumbLister,
     RouterLink,
+    ModuleTitlePipe,
   ],
   templateUrl: './course-form-base-page.html',
   styleUrl: './course-form-base-page.css'
@@ -36,12 +38,18 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
 
   breadcrumbs: Breadcrumb[] = []
 
+  selectedModuleIndex = signal<number>(0)
+  selectedModule = computed(() => {
+    return this.modules.at(this.selectedModuleIndex())
+  })
+
   get modules() {
     return (this.form.controls as { modules: FormArray<FormGroup> }).modules
   }
 
   addModule() {
     this.modules.push(this.formService.moduleGroupFactory())
+    this.selectedModuleIndex.set(this.modules.length - 1)
   }
 
   addLesson(moduleIndex: number) {
@@ -53,6 +61,13 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
 
     this.beforeRemovingModule(moduleIndex)
     this.modules.removeAt(moduleIndex);
+
+    let newSelectedModuleIndex = moduleIndex - 1
+    if (newSelectedModuleIndex < 0) {
+      newSelectedModuleIndex = 0
+    }
+
+    this.selectedModuleIndex.set(newSelectedModuleIndex)
   }
 
   removeLesson(moduleIndex: number, lessonIndex: number) {
@@ -84,6 +99,10 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
     if (message == undefined) message = messageByStatus[0]
 
     this.alertService.error(message)
+  }
+
+  selectModule(moduleIndex: number) {
+    this.selectedModuleIndex.set(moduleIndex)
   }
 
   sendFormToServer(courseForm: CourseForm): void { }

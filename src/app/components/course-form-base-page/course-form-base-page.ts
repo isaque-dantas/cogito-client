@@ -11,6 +11,9 @@ import {CourseFormBasePageInterface} from '../../interfaces/course-form-base-pag
 import {BreadcrumbLister} from '../breadcumb-lister/breadcrumb-lister.component';
 import {Breadcrumb} from '../../interfaces/breadcrumb';
 import {ModuleTitlePipe} from '../../pipes/module-title-pipe';
+import {LessonType} from '../../interfaces/lesson';
+import {LessonContent} from '../lesson-content/lesson-content';
+import {LessonFormService} from '../../services/lesson-form-service';
 
 @Component({
   selector: 'app-course-form-base-page',
@@ -19,7 +22,7 @@ import {ModuleTitlePipe} from '../../pipes/module-title-pipe';
     ReactiveFormsModule,
     BreadcrumbLister,
     RouterLink,
-    ModuleTitlePipe,
+    LessonContent
   ],
   templateUrl: './course-form-base-page.html',
   styleUrl: './course-form-base-page.css'
@@ -33,6 +36,7 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
   submitButtonLabel!: string
   formTitle!: string
 
+  lessonFormService = inject(LessonFormService)
   formService = inject(CourseFormService)
   form!: FormGroup
 
@@ -53,7 +57,7 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
   }
 
   addLesson(moduleIndex: number) {
-    (this.modules.at(moduleIndex).controls as any).lessons.push(this.formService.lessonGroupFactory())
+    (this.modules.at(moduleIndex).controls as any).lessons.push(this.lessonFormService.lessonGroupFactory())
   }
 
   removeModule(moduleIndex: number) {
@@ -83,7 +87,7 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
     if (this.form.invalid) return;
 
     let courseForm = this.form.value as CourseForm
-    courseForm = this.formService.replaceVideoLinksByIdsInCourseForm(courseForm)
+    courseForm = this.lessonFormService.replaceVideoLinksByIdsInCourseForm(courseForm)
 
     this.sendFormToServer(courseForm)
   }
@@ -114,4 +118,6 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
   getUrlForCourseView(): string {
     return "/"
   }
+
+  protected readonly LessonType = LessonType;
 }

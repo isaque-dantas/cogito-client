@@ -3,19 +3,19 @@ import {Header} from '../../components/header/header';
 import {CourseForm, CourseFormGroup} from '../../interfaces/course';
 import {CourseFormBasePage} from '../../components/course-form-base-page/course-form-base-page';
 import {FormGroup, ReactiveFormsModule} from '@angular/forms';
-import {NgxMaskDirective} from 'ngx-mask';
 import {Breadcrumb} from '../../interfaces/breadcrumb';
 import {BreadcrumbLister} from '../../components/breadcumb-lister/breadcrumb-lister.component';
 import {RouterLink} from '@angular/router';
+import {LessonContent} from '../../components/lesson-content/lesson-content';
 
 @Component({
   selector: 'app-course-creation-page',
   imports: [
     Header,
     ReactiveFormsModule,
-    NgxMaskDirective,
     BreadcrumbLister,
-    RouterLink
+    RouterLink,
+    LessonContent
   ],
   templateUrl: '../../components/course-form-base-page/course-form-base-page.html',
   styleUrl: '../../components/course-form-base-page/course-form-base-page.css',
@@ -30,6 +30,8 @@ export class CourseCreationPage extends CourseFormBasePage {
   constructor() {
     super();
     this.form = this.formService.courseCreationGroupFactory(1, [1]) as FormGroup
+
+    this.form.valueChanges.subscribe(console.log)
   }
 
   override sendFormToServer(courseForm: CourseForm) {

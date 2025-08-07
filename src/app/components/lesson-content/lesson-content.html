@@ -1,0 +1,48 @@
+<!--  [formGroup]="form"-->
+<div
+  class="form-control"
+  [class.invalid]="validationErrors() !== null"
+>
+  <label for="lesson-content-{{selectedModuleIndex()}}-{{lessonIndex()}}">{{ labelByType() }}*</label>
+  @switch (type()) {
+    @case (LessonType.VIDEO) {
+      <input
+        id="lesson-content-{{selectedModuleIndex()}}-{{lessonIndex()}}"
+        type="text"
+        placeholder="Link do vídeo"
+        (input)="writeValueFromEvent($event)"
+      >
+    }
+    @case (LessonType.DOCUMENT) {
+      <div class="flex flex-col gap-2 my-2 ngx-editor-wrapper">
+        <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
+        <ngx-editor
+          placeholder="Digite aqui..."
+          [editor]="editor"
+          [ngModel]="lessonAsDocumentContent"></ngx-editor>
+      </div>
+    }
+    @case (LessonType.FILE) {
+
+    }
+  }
+
+  @if (validationErrors()) {
+    @if (validationErrors()!['required']) {
+      <p class="error-message">Este campo é obrigatório.</p>
+    }
+    @if (validationErrors()!['hasNoVideoId']) {
+      <p
+        class="error-message flex flex-col gap-1">
+        <span>O link não possui um identificador válido, que é composto pelos caracteres após "v=", no próprio link.</span>
+        <span class="text-gray-500 text-sm">
+        Exemplo de formato válido: https://www.youtube.com/watch?v=<span class="font-bold">OIuG1bBkfs0</span>
+      </span>
+      </p>
+    }
+    @if (validationErrors()!['doesNotExist']) {
+      <p class="error-message flex flex-col gap-1">O vídeo informado não existe no YouTube. O
+        link está correto?</p>
+    }
+  }
+</div>

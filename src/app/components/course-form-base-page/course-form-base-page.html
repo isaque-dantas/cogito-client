@@ -35,14 +35,15 @@
                     [class.unselected-module-tag]="selectedModuleIndex() != moduleIndex"
                     (click)="selectModule(moduleIndex)"
                     type="button"
-                  >Módulo {{ moduleIndex + 1 }}</button>
+                  >Módulo {{ moduleIndex + 1 }}
+                  </button>
                 </li>
               }
             </ul>
           </div>
           <div formArrayName="modules" class="flex flex-col gap-16">
             <div class="flex flex-col gap-1">
-<!--              <span class="text-gray-500">Módulo #{{ selectedModuleIndex() + 1 }}</span>-->
+              <!--              <span class="text-gray-500">Módulo #{{ selectedModuleIndex() + 1 }}</span>-->
               <div [formGroupName]="selectedModuleIndex()"
                    class="flex flex-col gap-2 rounded-2xl border border-gray-300 p-6 bg-sky-50/50 relative">
 
@@ -50,7 +51,8 @@
                   <label for="module-title-{{selectedModuleIndex()}}">Título*</label>
                   <div class="input-wrapper">
                     <label for="module-title-{{selectedModuleIndex()}}"
-                           class="text-secondary w-fit leading-none text-lg">Módulo {{ selectedModuleIndex() + 1 }} -</label>
+                           class="text-secondary w-fit leading-none text-lg">Módulo {{ selectedModuleIndex() + 1 }}
+                      -</label>
                     <input
                       id="module-title-{{selectedModuleIndex()}}"
                       type="text"
@@ -79,6 +81,24 @@
                       lessonIndex = $index; track lessonIndex) {
                       <ng-container [formGroupName]="lessonIndex">
                         <div class="flex flex-col gap-4 rounded-lg border border-gray-300 p-4 relative pr-8">
+                          <div
+                            class="form-control lesson-type"
+                            [class.invalid]="lesson.controls.type.invalid"
+                          >
+                            <label for="lesson-type-{{selectedModuleIndex()}}-{{lessonIndex}}">Tipo*</label>
+                            <select
+                              id="lesson-type-{{selectedModuleIndex()}}-{{lessonIndex}}"
+                              formControlName="type"
+                              [value]="lesson.value.type"
+                            >
+                              <option value="video" [defaultSelected]="true">Vídeo</option>
+                              <option value="document">Documento</option>
+<!--                              <option value="file">Arquivo</option>-->
+                            </select>
+                            @if (lesson.get('type')!.getError('required')) {
+                              <p class="error-message">Este campo é obrigatório.</p>
+                            }
+                          </div>
                           <div class="form-control" [class.invalid]="lesson.controls.title.invalid">
                             <label for="lesson-title-{{selectedModuleIndex()}}-{{lessonIndex}}">Título*</label>
                             <div class="input-wrapper">
@@ -98,32 +118,15 @@
                               <p class="error-message">Este campo é obrigatório.</p>
                             }
                           </div>
-                          <div class="form-control" [class.invalid]="lesson.controls.video_link.invalid">
-                            <label for="lesson-video-link-{{selectedModuleIndex()}}-{{lessonIndex}}">Link do vídeo*</label>
-                            <input
-                              id="lesson-video-link-{{selectedModuleIndex()}}-{{lessonIndex}}"
-                              type="text"
-                              placeholder="Link do vídeo"
-                              formControlName="video_link"
-                              [value]="lesson.value.video_link"
-                            >
-                            @if (lesson.get('video_link')!.getError('required')) {
-                              <p class="error-message">Este campo é obrigatório.</p>
-                            }
-                            @if (lesson.get('video_link')!.getError('hasNoVideoId')) {
-                              <p
-                                class="error-message flex flex-col gap-1"><span>O link não possui um identificador válido, que é composto pelos caracteres após "v=", no próprio link.</span>
-                                <span class="text-gray-500 text-sm">
-                                    Exemplo de formato válido: https://www.youtube.com/watch?v=<span
-                                  class="font-bold">OIuG1bBkfs0</span>
-                                  </span>
-                              </p>
-                            }
-                            @if (lesson.get('video_link')!.getError('doesNotExist')) {
-                              <p class="error-message flex flex-col gap-1">O vídeo informado não existe no YouTube. O
-                                link está correto?</p>
-                            }
-                          </div>
+
+                          <app-lesson-content
+                            formControlName="content"
+                            [selectedModuleIndex]=selectedModuleIndex()
+                            [lessonIndex]=lessonIndex
+                            [validationErrors]="lesson.controls.content.errors"
+                            [type]="lesson.value.type!"
+                          ></app-lesson-content>
+
                           <button
                             type="button"
                             (click)="removeLesson(selectedModuleIndex(), lessonIndex)"

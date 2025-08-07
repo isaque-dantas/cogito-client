@@ -5,7 +5,7 @@ export interface Lesson {
   id: number
   title: string
   position: number
-  video_link?: string
+  content?: string
   status: LessonStatus
   parent_module: ModuleNestedResponse
   parent_course_title: string
@@ -18,32 +18,37 @@ export interface LessonNestedResponse {
   id: number
   title: string
   position: number
-  video_link?: string
+  content?: string
+  type: LessonType
   status: LessonStatus
 }
 
 export interface LessonNestedForm {
   title: string
-  video_link: string
+  content: string
+  type: LessonType
 }
 
 export interface LessonNestedFormWithIds {
   id: number
   title: string
-  video_link: string,
+  content: string,
+  type: LessonType
   position: number
 }
 
 export interface LessonForm {
   title: string
   position: number
-  video_link: string
+  content: string
+  type: LessonType
 }
 
 export interface LessonUpdateForm {
   title: string | null
   position: number | null
-  video_link: string | null
+  content: string | null
+  type: LessonType | null
 }
 
 
@@ -59,16 +64,24 @@ export enum LessonPositionRelatedToCourse {
   LAST = "last",
 }
 
+export enum LessonType {
+  DOCUMENT = "document",
+  VIDEO = "video",
+  FILE = "file",
+}
+
 export interface LessonFormGroup {
   title: FormControl<string | null>,
-  video_link: FormControl<string | null>
+  content: FormControl<string | null>,
+  type: FormControl<LessonType | null>,
 }
 
 export interface LessonFormGroupWithId {
   id: FormControl<number | null>,
   title: FormControl<string | null>,
-  video_link: FormControl<string | null>,
-  position: FormControl<number | null>
+  content: FormControl<string | null>,
+  position: FormControl<number | null>,
+  type: FormControl<LessonType | null>,
 }
 
 export interface LessonUpdateData {

@@ -11,6 +11,7 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {BreadcrumbLister} from '../../components/breadcumb-lister/breadcrumb-lister.component';
 import {Breadcrumb} from '../../interfaces/breadcrumb';
 import {RouterLink} from '@angular/router';
+import {LessonContent} from '../../components/lesson-content/lesson-content';
 
 @Component({
   selector: 'app-course-editing-page',
@@ -18,7 +19,8 @@ import {RouterLink} from '@angular/router';
     Header,
     ReactiveFormsModule,
     BreadcrumbLister,
-    RouterLink
+    RouterLink,
+    LessonContent
   ],
   templateUrl: '../../components/course-form-base-page/course-form-base-page.html',
   styleUrl: '../../components/course-form-base-page/course-form-base-page.css',
@@ -37,7 +39,6 @@ export class CourseEditingPage extends CourseFormBasePage implements OnInit {
   override breadcrumbs: Breadcrumb[] = [{'label': 'Início', 'url': '/'}, {'label': 'Painel Administrativo', 'url': '/painel-administrativo'}, {'label': this.formTitle}]
 
   moduleFormService = inject(ModuleFormService)
-  lessonFormService = inject(LessonFormService)
 
   ngOnInit() {
     this.activatedRoute.params.subscribe(params => {
@@ -47,7 +48,7 @@ export class CourseEditingPage extends CourseFormBasePage implements OnInit {
       this.courseService.getById(this.courseBeingEditedId).subscribe({
         next: course => {
           let courseForm: CourseFormWithIds = this.formService.getFormFromInstance(course)
-          courseForm = this.formService.addUrlPrefixToVideoIds(courseForm)
+          courseForm = this.lessonFormService.addUrlPrefixToVideoIds(courseForm)
 
           this.form = this.formService.courseEditingGroupFactory(
             course.modules.length,
@@ -81,7 +82,7 @@ export class CourseEditingPage extends CourseFormBasePage implements OnInit {
 
   override addLesson(moduleIndex: number) {
     this.form.controls.modules.at(moduleIndex).controls.lessons.push(
-      this.formService.lessonGroupFactory(true) as FormGroup<LessonFormGroupWithId>
+      this.lessonFormService.lessonGroupFactory(true) as FormGroup<LessonFormGroupWithId>
     )
   }
 

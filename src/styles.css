@@ -30,3 +30,25 @@ body {
 .youtube-player-placeholder-button {
   cursor: pointer;
 }
+
+.ngx-editor-wrapper h1 {
+  font-size: 24px;
+}
+
+.ngx-editor-wrapper h2 {
+  font-size: 20px;
+}
+
+.ngx-editor-wrapper h3 {
+  font-size: 18px;
+}
+
+.ngx-editor-wrapper ul {
+  list-style: disc;
+  padding-inline-start: 40px;
+}
+
+.ngx-editor-wrapper ol {
+  list-style-type: decimal;
+  padding-inline-start: 40px;
+}

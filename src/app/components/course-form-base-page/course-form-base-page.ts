@@ -95,8 +95,8 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
   handleFormError(error: HttpErrorResponse): void {
     const messageByStatus: { [status: number]: string } = {
       0: error.message,
-      401: "Você precisa estar logado(a) para criar um curso.",
-      403: "Você precisa ser coordenador(a) para criar um curso.",
+      401: "Você precisa estar logado(a) para criar ou editar um curso.",
+      403: "Você precisa ser coordenador(a) para criar ou editar um curso.",
     }
 
     let message = messageByStatus[error.status]

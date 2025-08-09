@@ -18,7 +18,6 @@ export class BreadcrumbLister {
   constructor() {
     effect(() => {
       this.activatedRoute.url.subscribe((data) => {
-        console.log(data)
         this.currentUrl.set("/" + data.map(data => data.path).join('/'))
       })
     })

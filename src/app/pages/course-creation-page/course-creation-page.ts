@@ -25,13 +25,29 @@ export class CourseCreationPage extends CourseFormBasePage {
   override submitButtonLabel = 'Enviar'
 
   declare form: FormGroup<CourseFormGroup>
-  override breadcrumbs: Breadcrumb[] = [{'label': 'Início', 'url': '/'}, {'label': 'Painel Administrativo', 'url': '/painel-administrativo'}, {'label': this.formTitle}]
+  override breadcrumbs: Breadcrumb[] = [{'label': 'Início', 'url': '/'}, {
+    'label': 'Painel Administrativo',
+    'url': '/painel-administrativo'
+  }, {'label': this.formTitle}]
 
   constructor() {
     super();
     this.form = this.formService.courseCreationGroupFactory(1, [1]) as FormGroup
 
-    this.form.valueChanges.subscribe(console.log)
+    this.form.valueChanges.subscribe((value) => {
+      console.log(
+        value.title,
+        value.modules!.map(m => m.lessons!.map(l => {
+          let content = ""
+          try {
+            content =  (l.content as any)!["content"][0]["content"][0]["text"]
+          } catch (e) {
+            content = l.content ?? ""
+          }
+
+          return `c: '${content}'; t: '${l.type}'`
+        })))
+    })
   }
 
   override sendFormToServer(courseForm: CourseForm) {

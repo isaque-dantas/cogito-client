@@ -1,16 +1,16 @@
-<!--  [formGroup]="form"-->
 <div
   class="form-control"
   [class.invalid]="validationErrors() !== null"
 >
-  <label for="lesson-content-{{selectedModuleIndex()}}-{{lessonIndex()}}">{{ labelByType() }}*</label>
+  <label [for]="lessonId()">{{ labelByType() }}*</label>
   @switch (type()) {
     @case (LessonType.VIDEO) {
       <input
-        id="lesson-content-{{selectedModuleIndex()}}-{{lessonIndex()}}"
+        [id]="lessonId()"
         type="text"
         placeholder="Link do vídeo"
         (input)="writeValueFromEvent($event)"
+        [value]="content()"
       >
     }
     @case (LessonType.DOCUMENT) {
@@ -18,12 +18,12 @@
         <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
         <ngx-editor
           placeholder="Digite aqui..."
-          [editor]="editor"
-          [ngModel]="lessonAsDocumentContent"></ngx-editor>
+          [id]="lessonId()"
+          [editor]="editor"></ngx-editor>
       </div>
     }
     @case (LessonType.FILE) {
-
+      <p>TODO</p>
     }
   }
 
@@ -42,7 +42,8 @@
     }
     @if (validationErrors()!['doesNotExist']) {
       <p class="error-message flex flex-col gap-1">O vídeo informado não existe no YouTube. O
-        link está correto?</p>
+        link está correto?
+      </p>
     }
   }
 </div>

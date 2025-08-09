@@ -166,7 +166,7 @@ export class LessonFormService {
       lessonFormGroup.get('content')!.setAsyncValidators(newValidators.asyncValidators)
     }
 
-    lessonFormGroup.get('content')!.reset()
+    lessonFormGroup.get('content')!.setValue(null)
   }
 
   getContentValidatorsByType(type: LessonType): { validators: ValidatorFn[], asyncValidators?: AsyncValidatorFn[] } {

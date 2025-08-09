@@ -43,16 +43,14 @@
           </div>
           <div formArrayName="modules" class="flex flex-col gap-16">
             <div class="flex flex-col gap-1">
-              <!--              <span class="text-gray-500">Módulo #{{ selectedModuleIndex() + 1 }}</span>-->
-              <div [formGroupName]="selectedModuleIndex()"
+              <div [formGroup]="selectedModule()"
                    class="flex flex-col gap-2 rounded-2xl border border-gray-300 p-6 bg-sky-50/50 relative">
 
                 <div class="form-control" [class.invalid]="selectedModule().get('title')!.invalid">
                   <label for="module-title-{{selectedModuleIndex()}}">Título*</label>
                   <div class="input-wrapper">
                     <label for="module-title-{{selectedModuleIndex()}}"
-                           class="text-secondary w-fit leading-none text-lg">Módulo {{ selectedModuleIndex() + 1 }}
-                      -</label>
+                           class="text-secondary w-fit leading-none text-lg">Módulo {{ selectedModuleIndex() + 1 }} -</label>
                     <input
                       id="module-title-{{selectedModuleIndex()}}"
                       type="text"
@@ -77,8 +75,7 @@
                   </div>
 
                   <ng-container formArrayName="lessons">
-                    @for (lesson of formService.getLessonsFromModule(selectedModule()); let
-                      lessonIndex = $index; track lessonIndex) {
+                    @for (lesson of formService.getLessonsFromModule(selectedModule()); let lessonIndex = $index; track lessonIndex) {
                       <ng-container [formGroupName]="lessonIndex">
                         <div class="flex flex-col gap-4 rounded-lg border border-gray-300 p-4 relative pr-8">
                           <div
@@ -126,6 +123,7 @@
                             [validationErrors]="lesson.controls.content.errors"
                             [type]="lesson.value.type!"
                           ></app-lesson-content>
+<!--                            [initialValue]="lesson.value.content"-->
 
                           <button
                             type="button"

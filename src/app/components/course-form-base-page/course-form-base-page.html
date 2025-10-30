@@ -27,124 +27,114 @@
               <span class="font-semibold">Adicionar módulo</span>
               <span class="material-symbols-outlined">add</span>
             </button>
-            <ul class="ml-4 gap-4 grid grid-cols-5">
-              @for (module of modules.controls; let moduleIndex = $index; track moduleIndex) {
-                <li>
-                  <button
-                    [class.selected-module-tag]="selectedModuleIndex() == moduleIndex"
-                    [class.unselected-module-tag]="selectedModuleIndex() != moduleIndex"
-                    (click)="selectModule(moduleIndex)"
-                    type="button"
-                  >Módulo {{ moduleIndex + 1 }}</button>
-                </li>
-              }
-            </ul>
           </div>
           <div formArrayName="modules" class="flex flex-col gap-16">
-            <div class="flex flex-col gap-1">
-<!--              <span class="text-gray-500">Módulo #{{ selectedModuleIndex() + 1 }}</span>-->
-              <div [formGroupName]="selectedModuleIndex()"
-                   class="flex flex-col gap-2 rounded-2xl border border-gray-300 p-6 bg-sky-50/50 relative">
+            @for (moduleControl of modules.controls; let i = $index; track i) {
+              <div class="flex flex-col gap-2">
+                <span class="text-gray-500">Módulo #{{ i + 1 }}</span>
+                <div [formGroupName]="i"
+                     class="flex flex-col gap-2 rounded-2xl border border-gray-300 p-6 bg-sky-50/50 relative">
 
-                <div class="form-control" [class.invalid]="selectedModule().get('title')!.invalid">
-                  <label for="module-title-{{selectedModuleIndex()}}">Título*</label>
-                  <div class="input-wrapper">
-                    <label for="module-title-{{selectedModuleIndex()}}"
-                           class="text-secondary w-fit leading-none text-lg">Módulo {{ selectedModuleIndex() + 1 }} -</label>
-                    <input
-                      id="module-title-{{selectedModuleIndex()}}"
-                      type="text"
-                      placeholder="Título"
-                      formControlName="title"
-                      [value]="selectedModule().value.title"
-                    >
-                  </div>
-                  @if (selectedModule().get('title')!.getError('required')) {
-                    <p class="error-message">Este campo é obrigatório.</p>
-                  }
-                </div>
-
-                <div class="flex flex-col gap-10 mt-6">
-                  <div class="flex gap-4 items-center">
-                    <h5 class="font-bold text-secondary text-2xl">Aulas</h5>
-                    <button type="button" (click)="addLesson(selectedModuleIndex())"
-                            class="cursor-pointer rounded-lg hover:bg-secondary hover:text-white border border-secondary text-secondary px-2 py-0.5 flex items-center gap-2 transition-all">
-                      <span class="font-semibold">Adicionar aula</span>
-                      <span class="material-symbols-outlined">add</span>
-                    </button>
-                  </div>
-
-                  <ng-container formArrayName="lessons">
-                    @for (lesson of formService.getLessonsFromModule(selectedModule()); let
-                      lessonIndex = $index; track lessonIndex) {
-                      <ng-container [formGroupName]="lessonIndex">
-                        <div class="flex flex-col gap-4 rounded-lg border border-gray-300 p-4 relative pr-8">
-                          <div class="form-control" [class.invalid]="lesson.controls.title.invalid">
-                            <label for="lesson-title-{{selectedModuleIndex()}}-{{lessonIndex}}">Título*</label>
-                            <div class="input-wrapper">
-                              <label
-                                for="lesson-title-{{selectedModuleIndex()}}-{{lessonIndex}}"
-                                class="text-secondary w-fit leading-none text-lg">Aula {{ lessonIndex + 1 }} -
-                              </label>
-                              <input
-                                id="lesson-title-{{selectedModuleIndex()}}-{{lessonIndex}}"
-                                type="text"
-                                placeholder="Título"
-                                formControlName="title"
-                                [value]="lesson.value.title"
-                              >
-                            </div>
-                            @if (lesson.get('title')!.getError('required')) {
-                              <p class="error-message">Este campo é obrigatório.</p>
-                            }
-                          </div>
-                          <div class="form-control" [class.invalid]="lesson.controls.video_link.invalid">
-                            <label for="lesson-video-link-{{selectedModuleIndex()}}-{{lessonIndex}}">Link do vídeo*</label>
-                            <input
-                              id="lesson-video-link-{{selectedModuleIndex()}}-{{lessonIndex}}"
-                              type="text"
-                              placeholder="Link do vídeo"
-                              formControlName="video_link"
-                              [value]="lesson.value.video_link"
-                            >
-                            @if (lesson.get('video_link')!.getError('required')) {
-                              <p class="error-message">Este campo é obrigatório.</p>
-                            }
-                            @if (lesson.get('video_link')!.getError('hasNoVideoId')) {
-                              <p
-                                class="error-message flex flex-col gap-1"><span>O link não possui um identificador válido, que é composto pelos caracteres após "v=", no próprio link.</span>
-                                <span class="text-gray-500 text-sm">
-                                    Exemplo de formato válido: https://www.youtube.com/watch?v=<span
-                                  class="font-bold">OIuG1bBkfs0</span>
-                                  </span>
-                              </p>
-                            }
-                            @if (lesson.get('video_link')!.getError('doesNotExist')) {
-                              <p class="error-message flex flex-col gap-1">O vídeo informado não existe no YouTube. O
-                                link está correto?</p>
-                            }
-                          </div>
-                          <button
-                            type="button"
-                            (click)="removeLesson(selectedModuleIndex(), lessonIndex)"
-                            [class.invisible]="formService.getLessonsFromModule(selectedModule()).length == 1"
-                            class="delete-btn material-symbols-outlined right-0 top-0 translate-y-4 translate-x-1/2 bg-sky-50 text-xl! py-1 px-2 rounded-full">
-                            delete
-                          </button>
-                        </div>
-                      </ng-container>
+                  <div class="form-control" [class.invalid]="moduleControl.get('title')!.invalid">
+                    <label for="module-title-{{i}}">Título*</label>
+                    <div class="input-wrapper">
+                      <label for="module-title-{{i}}"
+                             class="text-secondary w-fit leading-none text-lg">Módulo {{ i + 1 }} -</label>
+                      <input
+                        id="module-title-{{i}}"
+                        type="text"
+                        placeholder="Título"
+                        formControlName="title"
+                        [value]="moduleControl.value.title"
+                      >
+                    </div>
+                    @if (moduleControl.get('title')!.getError('required')) {
+                      <p class="error-message">Este campo é obrigatório.</p>
                     }
-                  </ng-container>
+                  </div>
+
+                  <div class="flex flex-col gap-10 mt-6">
+                    <div class="flex gap-4 items-center">
+                      <h5 class="font-bold text-secondary text-2xl">Aulas</h5>
+                      <button type="button" (click)="addLesson(i)"
+                              class="cursor-pointer rounded-lg hover:bg-secondary hover:text-white border border-secondary text-secondary px-2 py-0.5 flex items-center gap-2 transition-all">
+                        <span class="font-semibold">Adicionar aula</span>
+                        <span class="material-symbols-outlined">add</span>
+                      </button>
+                    </div>
+
+                    <ng-container formArrayName="lessons">
+                      @for (lesson of formService.getLessonsFromModule(moduleControl); let
+                        lessonIndex = $index; track lessonIndex) {
+                        <ng-container [formGroupName]="lessonIndex">
+                          <div class="flex flex-col gap-4 rounded-lg border border-gray-300 p-4 relative pr-8">
+                            <div class="form-control" [class.invalid]="lesson.controls.title.invalid">
+                              <label for="lesson-title-{{i}}-{{lessonIndex}}">Título*</label>
+                              <div class="input-wrapper">
+                                <label
+                                  for="lesson-title-{{i}}-{{lessonIndex}}"
+                                  class="text-secondary w-fit leading-none text-lg">Aula {{ lessonIndex + 1 }} -
+                                </label>
+                                <input
+                                  id="lesson-title-{{i}}-{{lessonIndex}}"
+                                  type="text"
+                                  placeholder="Título"
+                                  formControlName="title"
+                                  [value]="lesson.value.title"
+                                >
+                              </div>
+                              @if (lesson.get('title')!.getError('required')) {
+                                <p class="error-message">Este campo é obrigatório.</p>
+                              }
+                            </div>
+                            <div class="form-control" [class.invalid]="lesson.controls.video_link.invalid">
+                              <label for="lesson-video-link-{{i}}-{{lessonIndex}}">Link do vídeo*</label>
+                              <input
+                                id="lesson-video-link-{{i}}-{{lessonIndex}}"
+                                type="text"
+                                placeholder="Link do vídeo"
+                                formControlName="video_link"
+                                [value]="lesson.value.video_link"
+                              >
+                              @if (lesson.get('video_link')!.getError('required')) {
+                                <p class="error-message">Este campo é obrigatório.</p>
+                              }
+                              @if (lesson.get('video_link')!.getError('hasNoVideoId')) {
+                                <p
+                                  class="error-message flex flex-col gap-1"><span>O link não possui um identificador válido, que é composto pelos caracteres após "v=", no próprio link.</span>
+                                  <span class="text-gray-500 text-sm">
+                                    Exemplo de formato válido: https://www.youtube.com/watch?v=<span
+                                    class="font-bold">OIuG1bBkfs0</span>
+                                  </span>
+                                </p>
+                              }
+                              @if (lesson.get('video_link')!.getError('doesNotExist')) {
+                                <p class="error-message flex flex-col gap-1">O vídeo informado não existe no YouTube. O
+                                  link está correto?</p>
+                              }
+                            </div>
+                            <button
+                              type="button"
+                              (click)="removeLesson(i, lessonIndex)"
+                              [class.invisible]="formService.getLessonsFromModule(moduleControl).length == 1"
+                              class="delete-btn material-symbols-outlined right-0 top-0 translate-y-4 translate-x-1/2 bg-sky-50 text-xl! py-1 px-2 rounded-full">
+                              delete
+                            </button>
+                          </div>
+                        </ng-container>
+                      }
+                    </ng-container>
+                  </div>
+                  <button
+                    type="button"
+                    (click)="removeModule(i)"
+                    [class.invisible]="modules.length == 1"
+                    class="delete-btn material-symbols-outlined right-0 top-6 translate-x-full p-2 rounded-br-md rounded-tr-md">
+                    delete
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  (click)="removeModule(selectedModuleIndex())"
-                  [class.invisible]="modules.length == 1"
-                  class="delete-btn material-symbols-outlined right-0 top-6 translate-x-full p-2 rounded-br-md rounded-tr-md">
-                  delete
-                </button>
               </div>
-            </div>
+            }
           </div>
         </div>
         <div

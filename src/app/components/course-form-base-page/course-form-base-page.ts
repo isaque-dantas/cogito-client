@@ -38,10 +38,10 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
 
   breadcrumbs: Breadcrumb[] = []
 
-  selectedModuleIndex = signal<number>(0)
-  selectedModule = computed(() => {
-    return this.modules.at(this.selectedModuleIndex())
-  })
+  // selectedModuleIndex = signal<number>(0)
+  // selectedModule = computed(() => {
+  //   return this.modules.at(this.selectedModuleIndex())
+  // })
 
   get modules() {
     return (this.form.controls as { modules: FormArray<FormGroup> }).modules
@@ -49,7 +49,7 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
 
   addModule() {
     this.modules.push(this.formService.moduleGroupFactory())
-    this.selectedModuleIndex.set(this.modules.length - 1)
+    // this.selectedModuleIndex.set(this.modules.length - 1)
   }
 
   addLesson(moduleIndex: number) {
@@ -67,7 +67,7 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
       newSelectedModuleIndex = 0
     }
 
-    this.selectedModuleIndex.set(newSelectedModuleIndex)
+    // this.selectedModuleIndex.set(newSelectedModuleIndex)
   }
 
   removeLesson(moduleIndex: number, lessonIndex: number) {
@@ -102,7 +102,7 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
   }
 
   selectModule(moduleIndex: number) {
-    this.selectedModuleIndex.set(moduleIndex)
+    // this.selectedModuleIndex.set(moduleIndex)
   }
 
   sendFormToServer(courseForm: CourseForm): void { }

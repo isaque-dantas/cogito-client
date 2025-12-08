@@ -1,4 +1,4 @@
-import {Component, computed, inject, signal, TemplateRef} from '@angular/core';
+import {Component, computed, inject, OnInit, signal, TemplateRef} from '@angular/core';
 import {Header} from '../header/header';
 import {FormArray, FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {CourseFormService} from '../../services/course-form-service';
@@ -11,6 +11,7 @@ import {CourseFormBasePageInterface} from '../../interfaces/course-form-base-pag
 import {BreadcrumbLister} from '../breadcumb-lister/breadcrumb-lister.component';
 import {Breadcrumb} from '../../interfaces/breadcrumb';
 import {ModuleTitlePipe} from '../../pipes/module-title-pipe';
+import {Module} from '../../interfaces/module';
 
 @Component({
   selector: 'app-course-form-base-page',
@@ -38,10 +39,13 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
 
   breadcrumbs: Breadcrumb[] = []
 
-  // selectedModuleIndex = signal<number>(0)
-  // selectedModule = computed(() => {
-  //   return this.modules.at(this.selectedModuleIndex())
-  // })
+  selectedModuleIndex = signal<number>(0)
+  selectedModule = computed(() => {
+    return this.modules.at(this.selectedModuleIndex())
+  })
+  selectedLessons = computed(() => {
+    return this.formService.getLessonsFromModule(this.selectedModule())
+  })
 
   get modules() {
     return (this.form.controls as { modules: FormArray<FormGroup> }).modules
@@ -49,7 +53,7 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
 
   addModule() {
     this.modules.push(this.formService.moduleGroupFactory())
-    // this.selectedModuleIndex.set(this.modules.length - 1)
+    this.selectedModuleIndex.set(this.modules.length - 1)
   }
 
   addLesson(moduleIndex: number) {
@@ -67,7 +71,7 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
       newSelectedModuleIndex = 0
     }
 
-    // this.selectedModuleIndex.set(newSelectedModuleIndex)
+    this.selectedModuleIndex.set(newSelectedModuleIndex)
   }
 
   removeLesson(moduleIndex: number, lessonIndex: number) {
@@ -102,7 +106,7 @@ export class CourseFormBasePage implements CourseFormBasePageInterface {
   }
 
   selectModule(moduleIndex: number) {
-    // this.selectedModuleIndex.set(moduleIndex)
+    this.selectedModuleIndex.set(moduleIndex)
   }
 
   sendFormToServer(courseForm: CourseForm): void { }

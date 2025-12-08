@@ -7,6 +7,7 @@ import {NgxMaskDirective} from 'ngx-mask';
 import {Breadcrumb} from '../../interfaces/breadcrumb';
 import {BreadcrumbLister} from '../../components/breadcumb-lister/breadcrumb-lister.component';
 import {RouterLink} from '@angular/router';
+import {Module} from '../../interfaces/module';
 
 @Component({
   selector: 'app-course-creation-page',
@@ -30,6 +31,14 @@ export class CourseCreationPage extends CourseFormBasePage {
   constructor() {
     super();
     this.form = this.formService.courseCreationGroupFactory(1, [1]) as FormGroup
+  }
+
+  ngOnInit() {
+    this.form.valueChanges.subscribe(value => {
+      // @ts-ignore
+      let titles: string[] = this.form.value.modules.map((m: Module) => m.title)
+      console.log(titles.join(' - '))
+    })
   }
 
   override sendFormToServer(courseForm: CourseForm) {

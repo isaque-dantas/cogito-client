@@ -83,7 +83,10 @@ export class AuthService {
     if (!this.isBrowser || !this.isAuthenticated()) return false
 
     const storedUserRole = localStorage.getItem("role")
-    return storedUserRole == UserRoles.coordinator
+
+    if (storedUserRole == null) return false
+
+    return storedUserRole.toLowerCase() == UserRoles.coordinator.toLowerCase()
   }
 
   getLoggedUserName() {

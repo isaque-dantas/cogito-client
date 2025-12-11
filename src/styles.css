@@ -30,3 +30,23 @@ body {
 .youtube-player-placeholder-button {
   cursor: pointer;
 }
+
+input {
+  @apply px-4 py-2 placeholder:text-gray-400 border border-gray-600 rounded-lg outline-0! drop-shadow-none;
+}
+
+.f-hover {
+  @apply hover:border-secondary hover:bg-sky-50;
+}
+
+.f-selected {
+  @apply border-secondary bg-sky-100;
+}
+
+.f-not-selected {
+  @apply border-gray-300;
+}
+
+.f-disabled {
+  @apply opacity-50 cursor-not-allowed;
+}

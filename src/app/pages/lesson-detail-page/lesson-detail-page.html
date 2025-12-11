@@ -7,10 +7,10 @@
       <div class="flex flex-col gap-8 h-full flex-1">
         <h1 class="text-secondary font-bold text-4xl">{{ lesson()! | lessonTitle }}</h1>
 
-        @if (lesson()!.video_link) {
+        @if (lesson()!.content) {
           <div class="h-full w-full flex-1 flex justify-center" [id]="videoWrapperId">
             <youtube-player
-              [videoId]="lesson()!.video_link"
+              [videoId]="lesson()!.content"
               [width]="videoWrapperWidth"
               [height]="videoWrapperHeight">
             </youtube-player>

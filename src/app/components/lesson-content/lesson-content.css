@@ -1,0 +1,41 @@
+@reference '../../../styles.css';
+
+.hover {
+  @apply hover:border-secondary hover:bg-sky-50;
+}
+
+.selected {
+  @apply border-secondary bg-sky-100;
+}
+
+.not-selected {
+  @apply border-gray-300;
+}
+
+.disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+.error-message, .form-control.invalid > label {
+  @apply text-red-800;
+}
+
+.form-control.invalid .input-wrapper input {
+  @apply border-none;
+}
+
+.form-control.invalid input, .form-control.invalid .input-wrapper {
+  @apply border-red-700 border-2;
+}
+
+.form-control {
+  @apply flex flex-col gap-1;
+}
+
+.form-control > label {
+  @apply text-gray-600;
+}
+
+.error-message, .form-control.invalid > label {
+  @apply text-red-800;
+}

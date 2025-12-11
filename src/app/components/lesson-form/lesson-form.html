@@ -1,0 +1,54 @@
+<div class="flex flex-col gap-4 rounded-lg border border-gray-300 p-4 relative pr-8">
+  @if (form()) {
+    <!-- Lesson Type -->
+    <div class="form-control">
+      <app-lesson-type-form
+        [formControl]="getFormControl(form()!.controls['type'])">
+      </app-lesson-type-form>
+    </div>
+
+    <!-- Lesson Title -->
+    <div class="form-control"
+         [class.invalid]="form()!.controls['title'].invalid">
+      <label [for]="'lesson-title-' + moduleIndex() + '-' + lessonIndex()">Título*</label>
+      <div class="input-wrapper flex items-center gap-2">
+        @if (lessonIndex()) {
+          <label
+            [for]="'lesson-title-' + moduleIndex() + '-' + lessonIndex()"
+            class="text-secondary w-fit leading-none text-lg whitespace-nowrap">
+            Aula {{ lessonIndex() }} -
+          </label>
+        }
+        <input
+          [id]="'lesson-title-' + moduleIndex() + '-' + lessonIndex()"
+          type="text"
+          placeholder="Título"
+          [formControl]="getFormControl(form()!.controls['title'])"
+          class="flex-1 px-3 py-2 border border-gray-300 rounded-md"
+        />
+      </div>
+      @if (form()!.controls['title'].hasError('required')) {
+        <p class="error-message">Este campo é obrigatório.</p>
+      }
+    </div>
+
+    <!-- Lesson Content (Dynamic based on type) -->
+    <app-lesson-content
+      [lessonType]="currentLessonType()"
+      [formControl]="getFormControl(form()!.controls['content'])"
+      [showErrors]="form()!.controls['content'].touched">
+    </app-lesson-content>
+
+    @if (showDeleteButton()) {
+      <button
+        type="button"
+        (click)="onDelete()"
+        class="delete-btn material-symbols-outlined">
+        delete
+      </button>
+<!--        class="delete-btn material-symbols-outlined absolute right-0 top-0 translate-y-4 translate-x-1/2 bg-red-50 hover:bg-red-100 text-red-600 text-xl py-1 px-2 rounded-full transition-colors">-->
+    }
+  } @else {
+    <p>Form não é true</p>
+  }
+</div>

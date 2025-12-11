@@ -8,23 +8,27 @@ import {
   ValidationErrors,
   Validators
 } from '@angular/forms';
-import {catchError, from, map, Observable, of, tap} from 'rxjs';
+import {from, map, Observable, of} from 'rxjs';
 import {Course, CourseForm, CourseFormGroup, CourseFormGroupWithId, CourseFormWithIds} from '../interfaces/course';
 import {
+  DEFAULT_LESSON_TYPE,
   LessonCreationData,
-  LessonForm,
   LessonFormGroup,
   LessonFormGroupWithId,
-  LessonNestedForm, LessonNestedFormWithIds,
-  LessonNestedResponse, LessonUpdateData, LessonUpdateForm
+  LessonNestedForm,
+  LessonNestedFormWithIds,
+  LessonNestedResponse,
+  LessonType,
+  LessonUpdateData
 } from '../interfaces/lesson';
 import {
-  Module, ModuleCreationData, ModuleForm,
+  Module,
+  ModuleCreationData,
   ModuleFormGroup,
   ModuleFormGroupWithId,
   ModuleNestedForm,
-  ModuleNestedFormWithIds, ModuleUpdateData,
-  ModuleUpdateForm
+  ModuleNestedFormWithIds,
+  ModuleUpdateData
 } from '../interfaces/module';
 import {CourseService} from './course.service';
 import {AlertService} from './alert';
@@ -100,7 +104,8 @@ export class CourseFormService {
     if (!shouldAddIdControl)
       return this.fb.group({
         title: ['', [Validators.required]],
-        video_link: ['', {
+        type: ['', [Validators.required]],
+        content: ['', {
           validators: [Validators.required],
           asyncValidators: [this.existentYoutubeVideoLinkValidator()]
         }]
@@ -109,7 +114,8 @@ export class CourseFormService {
     return new FormGroup<LessonFormGroupWithId>({
       id: new FormControl(null),
       title: new FormControl('', Validators.required),
-      video_link: new FormControl('', {
+      type: new FormControl(DEFAULT_LESSON_TYPE, Validators.required),
+      content: new FormControl('', {
         validators: [Validators.min(1)],
         asyncValidators: [this.existentYoutubeVideoLinkValidator()]
       }),
@@ -156,7 +162,7 @@ export class CourseFormService {
 
   replaceVideoLinksByIdsInCourseForm(courseForm: CourseForm): CourseForm {
     const lessonMapper =
-      (l: LessonNestedForm): LessonNestedForm => ({...l, video_link: this.getVideoIdFromRawUrl(l.video_link)!})
+      (l: LessonNestedForm): LessonNestedForm => ({...l, content: this.getVideoIdFromRawUrl(l.content)!})
     const moduleMapper =
       (m: ModuleNestedForm): ModuleNestedForm => ({...m, lessons: m.lessons.map(lessonMapper)})
 
@@ -187,7 +193,8 @@ export class CourseFormService {
     return {
       id: lesson.id,
       title: lesson.title,
-      video_link: lesson.video_link!,
+      content: lesson.content!,
+      type: lesson.type,
       position: lesson.position
     }
   }
@@ -196,7 +203,7 @@ export class CourseFormService {
     const getVideoLinkFromId = (videoId: string): string => `https://www.youtube.com/watch?v=${videoId}`
 
     const lessonMapper =
-      (l: LessonNestedFormWithIds): LessonNestedFormWithIds => ({...l, video_link: getVideoLinkFromId(l.video_link)!})
+      (l: LessonNestedFormWithIds): LessonNestedFormWithIds => ({...l, content: getVideoLinkFromId(l.content)!})
     const moduleMapper =
       (m: ModuleNestedFormWithIds): ModuleNestedFormWithIds => ({...m, lessons: m.lessons.map(lessonMapper)})
 
@@ -222,7 +229,8 @@ export class CourseFormService {
         id: l.value.id!,
         data: {
           title: (l.value.title as string | null),
-          video_link: this.getVideoIdFromRawUrl(l.value.video_link as string),
+          content: this.getVideoIdFromRawUrl(l.value.content as string),
+          type: l.value.type as LessonType,
           position: (l.value.position as number | null)
         },
         formGroup: l
@@ -235,7 +243,7 @@ export class CourseFormService {
   }
 
   isLessonFormGroupDirty(lesson: FormGroup<LessonFormGroupWithId>): boolean {
-    return lesson.controls.title.dirty || lesson.controls.position.dirty || lesson.controls.video_link.dirty
+    return lesson.controls.title.dirty || lesson.controls.position.dirty || lesson.controls.content.dirty
   }
 
   updateCourseTitle(form: FormGroup<CourseFormGroupWithId>, titleValueToUpdate: string) {
@@ -260,14 +268,16 @@ export class CourseFormService {
       data: {
         title: l.value.title!,
         position: l.value.position!,
-        video_link: this.getVideoIdFromRawUrl(l.value.video_link!)!
+        content: this.getVideoIdFromRawUrl(l.value.content!)!,
+        type: l.value.type!
       },
       formGroup: l
     })
 
     const lessonNestedFormMapper = (l: FormGroup<LessonFormGroupWithId>): LessonNestedForm => ({
       title: l.value.title!,
-      video_link: this.getVideoIdFromRawUrl(l.value.video_link!)!
+      content: this.getVideoIdFromRawUrl(l.value.content!)!,
+      type: l.value.type!
     })
 
     const moduleMapper = (m: FormGroup<ModuleFormGroupWithId>): ModuleCreationData => ({

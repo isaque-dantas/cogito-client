@@ -1,0 +1,47 @@
+<div class="form-control w-full" [class.invalid]="formControl()!.invalid">
+  @switch (lessonType()) {
+    @case (LessonType.VIDEO) {
+      <label for="lesson-content-{{moduleIndex}}-{{lessonIndex}}">Link do vídeo*</label>
+      <input
+        id="lesson-content-{{moduleIndex}}-{{lessonIndex}}"
+        type="text"
+        placeholder="Link do vídeo"
+        [value]="value"
+        (input)="onChangeInputValue($event)"
+      >
+    }
+    @case (LessonType.DOCUMENT) {
+      <label for="lesson-content-{{moduleIndex}}-{{lessonIndex}}">DOcumento xD (not implemented)*</label>
+      <input
+        id="lesson-content-{{moduleIndex}}-{{lessonIndex}}"
+        type="text"
+        placeholder="DOcumento xD (not implemented)"
+        [value]="value"
+        [disabled]="isDisabled"
+      >
+    }
+    @case (LessonType.FILE) {
+      <p>Work in progress (trabalho em andamento)</p>
+    }
+  }
+  @if (formControl()) {
+    @if (formControl()!.getError('required')) {
+      <p class="error-message">Este campo é obrigatório.</p>
+    }
+
+    @if (formControl()!.getError('hasNoVideoId')) {
+      <p class="error-message flex flex-col gap-1">
+        <span>O link não possui um identificador válido, que é composto pelos caracteres após "v=", no próprio link.</span>
+        <span class="text-gray-500 text-sm">
+            Exemplo de formato válido: https://www.youtube.com/watch?v=<span class="font-bold">OIuG1bBkfs0
+          </span>
+        </span>
+      </p>
+    }
+
+    @if (formControl()!.getError('doesNotExist')) {
+      <p class="error-message flex flex-col gap-1">O vídeo informado não existe no YouTube. O
+        link está correto?</p>
+    }
+  }
+</div>

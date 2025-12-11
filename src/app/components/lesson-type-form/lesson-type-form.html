@@ -1,0 +1,20 @@
+<div class="flex gap-3">
+  @for (type of lessonTypes; track $index) {
+    <label
+      class="base hover:border-secondary! hover:bg-sky-100"
+      [class.disabled]="isDisabled"
+      [class.selected]="isSelected(type.value)"
+    >
+      <input
+        type="radio"
+        [value]="type.value"
+        [checked]="value === type.value"
+        [disabled]="isDisabled"
+        (change)="onTypeChange(type.value)"
+        class="hidden"
+      />
+      <span class="material-symbols-outlined">{{ type.icon }}</span>
+      <span>{{ type.label }}</span>
+    </label>
+  }
+</div>

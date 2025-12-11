@@ -5,7 +5,8 @@ export interface Lesson {
   id: number
   title: string
   position: number
-  video_link?: string
+  content?: string
+  type: LessonType
   status: LessonStatus
   parent_module: ModuleNestedResponse
   parent_course_title: string
@@ -18,32 +19,37 @@ export interface LessonNestedResponse {
   id: number
   title: string
   position: number
-  video_link?: string
+  content?: string
+  type: LessonType
   status: LessonStatus
 }
 
 export interface LessonNestedForm {
   title: string
-  video_link: string
+  content: string
+  type: LessonType
 }
 
 export interface LessonNestedFormWithIds {
   id: number
   title: string
-  video_link: string,
+  content: string,
+  type: LessonType
   position: number
 }
 
 export interface LessonForm {
   title: string
   position: number
-  video_link: string
+  content: string
+  type: LessonType
 }
 
 export interface LessonUpdateForm {
   title: string | null
   position: number | null
-  video_link: string | null
+  content: string | null
+  type: LessonType
 }
 
 
@@ -61,13 +67,15 @@ export enum LessonPositionRelatedToCourse {
 
 export interface LessonFormGroup {
   title: FormControl<string | null>,
-  video_link: FormControl<string | null>
+  content: FormControl<string | null>
+  type: FormControl<LessonType | null>
 }
 
 export interface LessonFormGroupWithId {
   id: FormControl<number | null>,
   title: FormControl<string | null>,
-  video_link: FormControl<string | null>,
+  content: FormControl<string | null>,
+  type: FormControl<LessonType | null>
   position: FormControl<number | null>
 }
 
@@ -82,3 +90,11 @@ export interface LessonCreationData {
   data: LessonForm
   formGroup: FormGroup<LessonFormGroupWithId>
 }
+
+export enum LessonType {
+  VIDEO = "video",
+  DOCUMENT = "document",
+  FILE = "file",
+}
+
+export const DEFAULT_LESSON_TYPE = LessonType.VIDEO

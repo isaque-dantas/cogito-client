@@ -1,0 +1,13 @@
+@reference '../../../styles.css';
+
+.base {
+  @apply flex items-center px-2 py-1 gap-2 border-1 border-gray-400 rounded-lg cursor-pointer transition-all min-w-[100px];
+}
+
+.selected {
+  @apply bg-sky-50 border-secondary! font-semibold text-sky-800;
+}
+
+.disabled {
+  @apply opacity-50 cursor-not-allowed;
+}

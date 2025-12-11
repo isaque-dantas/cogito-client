@@ -8,6 +8,7 @@ import {Breadcrumb} from '../../interfaces/breadcrumb';
 import {BreadcrumbLister} from '../../components/breadcumb-lister/breadcrumb-lister.component';
 import {RouterLink} from '@angular/router';
 import {Module} from '../../interfaces/module';
+import {LessonForm} from '../../components/lesson-form/lesson-form';
 
 @Component({
   selector: 'app-course-creation-page',
@@ -16,7 +17,8 @@ import {Module} from '../../interfaces/module';
     ReactiveFormsModule,
     NgxMaskDirective,
     BreadcrumbLister,
-    RouterLink
+    RouterLink,
+    LessonForm
   ],
   templateUrl: '../../components/course-form-base-page/course-form-base-page.html',
   styleUrl: '../../components/course-form-base-page/course-form-base-page.css',
@@ -36,8 +38,9 @@ export class CourseCreationPage extends CourseFormBasePage {
   ngOnInit() {
     this.form.valueChanges.subscribe(value => {
       // @ts-ignore
-      let titles: string[] = this.form.value.modules.map((m: Module) => m.title)
-      console.log(titles.join(' - '))
+      // let titles: string[] = this.form.value.modules.map((m: Module) => m.title)
+      // console.log(titles.join(' - '))
+      console.log('CourseCreationPage: ', this.form.value.modules[0].lessons[0].content)
     })
   }
 

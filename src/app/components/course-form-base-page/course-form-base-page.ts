@@ -12,6 +12,7 @@ import {BreadcrumbLister} from '../breadcumb-lister/breadcrumb-lister.component'
 import {Breadcrumb} from '../../interfaces/breadcrumb';
 import {ModuleTitlePipe} from '../../pipes/module-title-pipe';
 import {Module} from '../../interfaces/module';
+import {LessonForm} from '../lesson-form/lesson-form';
 
 @Component({
   selector: 'app-course-form-base-page',
@@ -21,6 +22,7 @@ import {Module} from '../../interfaces/module';
     BreadcrumbLister,
     RouterLink,
     ModuleTitlePipe,
+    LessonForm,
   ],
   templateUrl: './course-form-base-page.html',
   styleUrl: './course-form-base-page.css'

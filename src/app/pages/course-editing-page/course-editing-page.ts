@@ -11,6 +11,7 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {BreadcrumbLister} from '../../components/breadcumb-lister/breadcrumb-lister.component';
 import {Breadcrumb} from '../../interfaces/breadcrumb';
 import {RouterLink} from '@angular/router';
+import {LessonForm} from '../../components/lesson-form/lesson-form';
 
 @Component({
   selector: 'app-course-editing-page',
@@ -18,7 +19,8 @@ import {RouterLink} from '@angular/router';
     Header,
     ReactiveFormsModule,
     BreadcrumbLister,
-    RouterLink
+    RouterLink,
+    LessonForm
   ],
   templateUrl: '../../components/course-form-base-page/course-form-base-page.html',
   styleUrl: '../../components/course-form-base-page/course-form-base-page.css',
